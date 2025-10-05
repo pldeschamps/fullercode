@@ -1,0 +1,17 @@
+{
+  "name": "fullercode",
+  "version": "1.0.0",
+  "description": "universal unambiguous geocode system",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Pierre-Louis Deschamps",
+  "license": "Apache-2.0",
+  "devDependencies": {
+
+  },
+  "dependencies": {
+
+  }
+}

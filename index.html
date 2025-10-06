@@ -1,30 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.133/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.133/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #cesiumContainer {
+            position: absolute;
+            top: 120px;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+        }
+
+        .overlay-text {
+            position: absolute !important;
+            top: 10px;
+            left: 0;
+            width: 100vw;
+            text-align: center;
+            z-index: 1000;
+            pointer-events: none; /* allows clicks to pass through to Cesium */
+        }
+
+        #cesiumContainer canvas {
+            z-index: 0 !important;
+        }
+
+        @media (max-width: 600px) {
+            .overlay-text {
+                display: none;
+            }
+        }
+        #cameraLabel {
+           
+            background-color: red;
+            color: black;
+        }
+    </style>
     <meta charset="utf-8">
     <title>fullercode</title>
     <!-- Include the CesiumJS JavaScript and CSS files -->
-    <script src="https://cesium.com/downloads/cesiumjs/releases/1.133/Build/Cesium/Cesium.js"></script>
-    <link href="https://cesium.com/downloads/cesiumjs/releases/1.133/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 </head>
 <body>
-    <h1>
-        <font face="Courier New, monospace"><b>fullercode.org</b></font>
-    </h1>
-    <p>
-        <font face="Courier New, monospace">
-            <b>
-                universal unambiguous geocode system
-            </b>
-        </font>
-    </p>
-</body>
-<div id="cesiumContainer"></div>
-<script src="GeoCoord.js"></script>
-<script src="Cartesian3.js"></script>
-<script src="GeoPoint.js"></script>
-<script src="fuller.js"></script>
-<script src="cesium.js"></script>
+    <div class="overlay-text">
+        <h1>
+            <font face="Courier New, monospace"><b>fullercode.org</b></font>
+        </h1>
+        <p>
+            <font face="Courier New, monospace">
+                <b>
+                    universal unambiguous geocode system
+                </b>
+            </font>
+        </p>
     </div>
+
+    <div id="cesiumContainer"></div>
+    <div id="cameraLabel" style="
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 2000;
+            background: rgba(255,255,255,0.8);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 16px;
+            pointer-events: none;
+    "></div>
+    <script src="GeoCoord.js"></script>
+    <script src="Cartesian3.js"></script>
+    <script src="GeoPoint.js"></script>
+    <script src="FacesGeoPositions.js"></script>
+    <script src="fuller.js"></script>
+    <script src="cesium.js"></script>
 </body>
 </html>

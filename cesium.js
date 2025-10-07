@@ -30,6 +30,24 @@ function addPolygons() {
     });
 }
 
+function addSubtriangle(fgp) {
+    const viewer = window.fullerData.viewer;
+    if (!fgp || !viewer) return;
+    console.log("subtriangle: ",fgp.faceId);
+    fgp.vertices.forEach(positions => {
+        viewer.entities.add({
+            polygon: {
+                hierarchy: positions,
+                height: 20,
+                material: Cesium.Color.BLUE.withAlpha(0.05),
+                outline: true,
+                outlineWidth: 10,
+                outlineColor: Cesium.Color.GREEN
+            }
+        });
+    });
+}
+
 // Attendre que fuller.js ait chargé les données
 document.addEventListener("DOMContentLoaded", () => {
     // Attendre que le JSON soit chargé (sinon facesPositions sera undefined)
@@ -80,6 +98,10 @@ function findClosestFaceCenter() {
         });
 
         if (closestFace) {
+            const st = new Subtriangles(closestFace);
+            st.subFaces.forEach(sub => {
+                addSubtriangle(sub);
+            });
             console.log(`Closest face: ${closestFace.faceId}, distance: ${minDist}`);
             // You can also update a label or UI here if needed
         }

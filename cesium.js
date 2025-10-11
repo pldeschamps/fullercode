@@ -2,10 +2,21 @@
 
 // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
 
-
+//Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MDk0NDgwMS03NmEzLTQ0MzQtOTc3Ny02MmNmNDg2ZGY3MTUiLCJpZCI6MzQ1MTMzLCJpYXQiOjE3NTg5OTA0MTN9.1aWmnRsHn8Z70pU5B7gJhQOLrarcr4SGf6GxTuPB0Xs';
+Cesium.Ion.defaultAccessToken = null;
 window.viewer = new Cesium.Viewer('cesiumContainer', {
+    baseLayer: Cesium.ImageryLayer.fromProviderAsync(
+        Cesium.TileMapServiceImageryProvider.fromUrl(
+            Cesium.buildModuleUrl("Assets/Textures/NaturalEarthII"),
+        ),
+    ),
     animation: false,
-    timeline: false
+    timeline: false,
+    geocoder: false,
+    skyBox: false,
+    skyatmosphere: false,
+    sun: false,
+    moon: false,
 });
 window.scene = window.viewer.scene;
 window.entities = window.viewer.entities;
@@ -24,7 +35,7 @@ function addPolygons() {
                 material: Cesium.Color.BLUE.withAlpha(0.05),
                 outline: true,
                 outlineWidth: 10,
-                outlineColor: Cesium.Color.GREEN
+                outlineColor: Cesium.Color.MAGENTA
             }
         });
     });
@@ -42,7 +53,7 @@ function addSubtriangle(fgp) {
                 material: Cesium.Color.BLUE.withAlpha(0.05),
                 outline: true,
                 outlineWidth: 10,
-                outlineColor: Cesium.Color.GREEN
+                outlineColor: Cesium.Color.MAGENTA
             }
         });
     });

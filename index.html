@@ -2,6 +2,15 @@
 <html lang="en">
 
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QV6F9D5NG0"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-QV6F9D5NG0');
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.133/Build/Cesium/Cesium.js"></script>
@@ -12,16 +21,15 @@
     <style>
 
 
-/*        #cesiumContainer {
-            position: absolute;
-            top: 120px;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 0;
-        }*/
+                #cesiumContainer {
+            width: 100%;
+            height: 650px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
 
-/*        #cameraLabel {
+        /*        #cameraLabel {
             background-color: red;
             color: black;
         }*/
@@ -32,7 +40,7 @@
 <body>
     <header class="site-header">
         <div class="container">
-            <h1 class="logo">fullercode.org</h1>
+            <!--<h1 class="logo">fullercode.org</h1>-->
             <nav class="main-nav" aria-label="Main navigation">
                 <ul>
                     <li><a href="#purpose">Purpose</a></li>

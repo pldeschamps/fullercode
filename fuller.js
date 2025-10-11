@@ -12,7 +12,7 @@ fetch("icosaedre.json")
             verts[v.id] = Cesium.Cartesian3.fromDegrees(v.lon, v.lat, 0);
             viewer.entities.add({
                 position: verts[v.id],
-                point: { pixelSize: 3, color: Cesium.Color.RED },
+                point: { pixelSize: 3, color: Cesium.Color.MAGENTA },
                 label: { text: v.id.toString(), font: "24px sans-serif", pixelOffset: new Cesium.Cartesian2(0, -12) }
             });
         });
@@ -44,7 +44,7 @@ fetch("icosaedre.json")
                 //point: { pixelSize: 10, color: Cesium.Color.YELLOW },
                 label: {
                     text: `${faceObj.faceId}`, font: "48px sans-serif",
-                    fillColor: Cesium.Color.RED.withAlpha(0.5)               }
+                    fillColor: Cesium.Color.MAGENTA.withAlpha(0.5)               }
             });
         });
     });

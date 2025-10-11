@@ -2,87 +2,110 @@
 <html lang="en">
 
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cesium.com/downloads/cesiumjs/releases/1.133/Build/Cesium/Cesium.js"></script>
     <link href="https://cesium.com/downloads/cesiumjs/releases/1.133/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="all"
+          href="base.css" />
+    <link rel="stylesheet" href="styles.css">
     <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
 
-        #cesiumContainer {
+
+/*        #cesiumContainer {
             position: absolute;
             top: 120px;
             left: 0;
             width: 100vw;
             height: 100vh;
             z-index: 0;
-        }
+        }*/
 
-        .overlay-text {
-            position: absolute !important;
-            top: 10px;
-            left: 0;
-            width: 100vw;
-            text-align: center;
-            z-index: 1000;
-            pointer-events: none; /* allows clicks to pass through to Cesium */
-        }
-
-        #cesiumContainer canvas {
-            z-index: 0 !important;
-        }
-
-        @media (max-width: 600px) {
-            .overlay-text {
-                display: none;
-            }
-        }
-        #cameraLabel {
-           
+/*        #cameraLabel {
             background-color: red;
             color: black;
-        }
+        }*/
     </style>
-    <meta charset="utf-8">
-    <title>fullercode</title>
+    <title>fullercode.org</title>
     <!-- Include the CesiumJS JavaScript and CSS files -->
 </head>
 <body>
-    <div class="overlay-text">
-        <h1>
-            <font face="Courier New, monospace"><b>fullercode.org</b></font>
-        </h1>
-        <p>
-            <font face="Courier New, monospace">
-                <b>
-                    universal unambiguous geocode system
-                </b>
-            </font>
-        </p>
-    </div>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="logo">fullercode.org</h1>
+            <nav class="main-nav" aria-label="Main navigation">
+                <ul>
+                    <li><a href="#purpose">Purpose</a></li>
+                    <li><a href="#fuller">Fuller</a></li>
+                    <li><a href="#geocode">Geocode</a></li>
+                    <li><a href="#alphabet">Alphabet</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#cesiumjs">3D demo</a></li>
+                    <li><div id="cameraLabel">Position</div></li>
+                </ul>
+            </nav>
 
-    <div id="cesiumContainer"></div>
-    <div id="cameraLabel" style="
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 2000;
-            background: rgba(255,255,255,0.8);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 16px;
-            pointer-events: none;
-    "></div>
-    <script src="GeoCoord.js"></script>
-    <script src="Cartesian3.js"></script>
-    <script src="GeoPoint.js"></script>
-    <script src="FacesGeoPositions.js"></script>
-    <script src="Subtriangles.js"></script>
-    <script src="fuller.js"></script>
-    <script src="cesium.js"></script>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <br />
+            <p>
+                Site under construction...
+            </p>
+            <pre>
+  ____
+__\  /__/\/\
+\fullercode/ .org
+/__/\/\__\
+</pre>
+            <a id="purpose">
+                <h2>Purpose</h2>
+            </a>
+
+            To provide a universal global unambiguous free open short simple geocode system
+
+            <br>
+            <a id="fuller"><h2>Fuller projection</h2></a>
+            The Fuller projection is an icosahedron map projection of the entire Earth's surface onto 20 triangles.<br>
+            <a href="https://en.m.wikipedia.org/wiki/Dymaxion_map">
+                https://en.m.wikipedia.org/wiki/Dymaxion_map
+            </a>
+            <br>
+            <a id="geocode"><h2>Fullercode geocode</h2></a>
+
+            Fullercode assigns a character to each triangle and then divides the triangle into 16 smaller triangles:
+            Fullercode is a hierarchical and regular Discrete Global Grid (DGG).<br>
+            <a href="https://en.m.wikipedia.org/wiki/Discrete_global_grid">
+                https://en.m.wikipedia.org/wiki/Discrete_global_grid
+            </a>
+            <br>
+            <a id="alphabet"><h2>Alphabet</h2></a>
+            Fullercode uses an unambiguous alphabet of 16 characters, plus 4 additional ones for the 20 triangles of the icosahedron:
+            <br>
+            A C F H M P R T V X 2 3 5 7 8 9  <br>
+            N S K J  <br>
+            These characters were chosen to avoid any ambiguity.
+            <a id="contact"><h2>Contact</h2></a>
+            The code will initially be available in JavaScript.<br>
+            <a href="https://github.com/pldeschamps/fullercode-js">
+                https://github.com/pldeschamps/fullercode-js
+            </a>
+            <br>
+
+            For any further information, please contact jdd dot almicantarat at gmail dot com.<br>
+        </section>
+
+        <div id="cesiumContainer"></div>
+        
+        <script src="GeoCoord.js"></script>
+        <script src="Cartesian3.js"></script>
+        <script src="GeoPoint.js"></script>
+        <script src="FacesGeoPositions.js"></script>
+        <script src="Subtriangles.js"></script>
+        <script src="fuller.js"></script>
+        <script src="cesium.js"></script>
+    </main>
 </body>
 </html>

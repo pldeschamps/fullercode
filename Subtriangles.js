@@ -25,9 +25,9 @@ class Subtriangles {
         const ids = faceGeoPos.subtrianglesIds.split('');
         // Define 16 subtriangles (each as a FacesGeoPositions)
         this.subFaces = [
-            new FacesGeoPositions(this.faceGeoPos.faceId + ids[0], [this.ac_ab, this.ab_bc, this.bc_ac], faceGeoPos.subtrianglesIds),
-            new FacesGeoPositions(this.faceGeoPos.faceId + ids[1], [this.a, this.a_ab, this.ac_a], faceGeoPos.subtrianglesIds),
-            new FacesGeoPositions(this.faceGeoPos.faceId + ids[2], [this.ac_ab, this.ac_a, this.a_ab], faceGeoPos.subtrianglesIds)
+            //new FacesGeoPositions(this.faceGeoPos.faceId + ids[0], new Cesium.Cartesian3(this.ac_ab, this.ab_bc, this.bc_ac), faceGeoPos.subtrianglesIds),
+            //new FacesGeoPositions(this.faceGeoPos.faceId + ids[1], new Cesium.Cartesian3(this.a, this.a_ab, this.ac_a), faceGeoPos.subtrianglesIds),
+            //new FacesGeoPositions(this.faceGeoPos.faceId + ids[2], new Cesium.Cartesian3(this.ac_ab, this.ac_a, this.a_ab), faceGeoPos.subtrianglesIds)
             //,
         //    new FacesGeoPositions(this.faceGeoPos.faceId+ids[3], [pts.a_ab, pts.ac_ab, pts.ab_bc]),
         //    new FacesGeoPositions(this.faceGeoPos.faceId+ids[4], [pts.ac_ab, pts.ab_bc, pts.bc_ac]),

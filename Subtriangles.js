@@ -24,8 +24,9 @@ class Subtriangles {
         //  strangely, the following point is not equal to this.ab_bc
         //  this.ac_ab_b_bc = Subtriangles.midpoint(this.ac_ab, this.b_bc);
         // Why is this.ac_ab_b_bc != this.ab_bc ?
-
+        console.log(faceGeoPos.subtrianglesIds);
         const ids = faceGeoPos.subtrianglesIds.split('');
+        console.log(ids[0]);
         // Define 16 subtriangles (each as a FacesGeoPositions)
         this.subFaces = [
             new FaceGeoPositions(this.faceGeoPos.faceId + ids[0], [this.ac_ab, this.ab_bc, this.bc_ac], faceGeoPos.subtrianglesIds),

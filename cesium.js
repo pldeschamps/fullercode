@@ -41,13 +41,13 @@ function addPolygons(facesPositions) {
     console.log("positions:", typeof facesPositions);
     
     facesPositions.forEach(positions => {
-        console.log("positions:", positions[0].x.toString());
+        //console.log("positions:", positions[0].x.toString());
         addPolygon(positions);
     });
 }
 function addPolygon(positions) {
     
-        console.log("positions:", positions[0].x.toString());
+        //console.log("positions:", positions[0].x.toString());
         viewer.entities.add({
             polygon: {
                 hierarchy: positions,

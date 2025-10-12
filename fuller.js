@@ -27,7 +27,7 @@ fetch("icosaedre.json")
                 )
             );
             
-            //console.log(face.subtrianglesids);
+            console.log(face.subtrianglesids);
             return new FaceGeoPositions(face.id, positions, face.subtrianglesids);
         });
 

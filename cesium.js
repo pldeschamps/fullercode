@@ -21,13 +21,33 @@ window.viewer = new Cesium.Viewer('cesiumContainer', {
 window.scene = window.viewer.scene;
 window.entities = window.viewer.entities;
 
+let addedSub = [];
+// Attendre que fuller.js ait chargé les données
+document.addEventListener("DOMContentLoaded", () => {
+    // Attendre que le JSON soit chargé (sinon facesPositions sera undefined)
+    const interval = setInterval(() => {
+        if (window.fullerData && window.fullerData.facesPositions) {
+            addPolygons(window.fullerData.facesPositions);
+            clearInterval(interval);
+        }
+    }, 100);
+});
 
-function addPolygons() {
-    const facesPositions = window.fullerData.facesPositions;
+
+function addPolygons(facesPositions) {
+//    const facesPositions = window.fullerData.facesPositions;
     const viewer = window.fullerData.viewer;
     if (!facesPositions || !viewer) return;
-    console.log("positions:", facesPositions.positions);
+    console.log("positions:", typeof facesPositions);
+    
     facesPositions.forEach(positions => {
+        console.log("positions:", positions[0].x.toString());
+        addPolygon(positions);
+    });
+}
+function addPolygon(positions) {
+    
+        console.log("positions:", positions[0].x.toString());
         viewer.entities.add({
             polygon: {
                 hierarchy: positions,
@@ -38,37 +58,23 @@ function addPolygons() {
                 outlineColor: Cesium.Color.MAGENTA
             }
         });
-    });
-}
+    }
 
 function addSubtriangle(fgp) {
     const viewer = window.fullerData.viewer;
     if (!fgp || !viewer) return;
-    console.log("subtriangle: ",fgp.faceId);
-    fgp.vertices.forEach(positions => {
-        viewer.entities.add({
-            polygon: {
-                hierarchy: positions,
-                height: 20,
-                material: Cesium.Color.BLUE.withAlpha(0.05),
-                outline: true,
-                outlineWidth: 10,
-                outlineColor: Cesium.Color.MAGENTA
-            }
-        });
+    console.log("subtriangle: ", typeof fgp.vertices);
+    //window.fullerData.facesPositions = facesGeoPositions.map(faceObj => faceObj.vertices);
+    const fsps = fgp.map(faceObj => faceObj.vertices);
+
+    fsps.forEach(positions => {
+        console.log("positions:", positions[0].x.toString());
+        addPolygon(positions);
     });
 }
 
-// Attendre que fuller.js ait chargé les données
-document.addEventListener("DOMContentLoaded", () => {
-    // Attendre que le JSON soit chargé (sinon facesPositions sera undefined)
-    const interval = setInterval(() => {
-        if (window.fullerData && window.fullerData.facesPositions) {
-            addPolygons();
-            clearInterval(interval);
-        }
-    }, 100);
-});
+
+
 // Camera change event to update lat/lon label
 function updateCameraLabel() {
     console.log("Updating camera label");   
@@ -107,12 +113,16 @@ function findClosestFaceCenter() {
                 closestFace = faceObj;
             }
         });
-
-        if (closestFace) {
+        console.log(addedSub[0]);
+        const alreadyAdded = addedSub.includes(closestFace.faceId);
+        if (closestFace && !alreadyAdded) {
+            addedSub.push(closestFace.faceId);
             const st = new Subtriangles(closestFace);
-            st.subFaces.forEach(sub => {
-                addSubtriangle(sub);
-            });
+            const fsps = st.subFaces.map(faceObj => faceObj.vertices);
+            addPolygons(fsps);
+            //st.subFaces.forEach(sub => {
+            //    addSubtriangle(sub);
+            //});
             console.log(`Closest face: ${closestFace.faceId}, distance: ${minDist}`);
             // You can also update a label or UI here if needed
         }

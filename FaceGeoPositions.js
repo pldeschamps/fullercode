@@ -1,4 +1,4 @@
-class FacesGeoPositions {
+class FaceGeoPositions {
     constructor(faceId, vertices,subtrianglesIds) {
         this.faceId = faceId;
         this.vertices = vertices; // Array of Cesium.Cartesian3
@@ -23,4 +23,4 @@ class FacesGeoPositions {
 }
 
 // Make it globally available
-window.FacesGeoPositions = FacesGeoPositions;
+window.FaceGeoPositions = FaceGeoPositions;

@@ -28,7 +28,7 @@ fetch("icosaedre.json")
             );
             
             //console.log(face.subtrianglesids);
-            return new FacesGeoPositions(face.id, positions, face.subtrianglesids);
+            return new FaceGeoPositions(face.id, positions, face.subtrianglesids);
         });
 
         // Stockage dans l'objet global

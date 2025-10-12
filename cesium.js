@@ -120,6 +120,17 @@ function findClosestFaceCenter() {
             const st = new Subtriangles(closestFace);
             const fsps = st.subFaces.map(faceObj => faceObj.vertices);
             addPolygons(fsps);
+
+            st.subFaces.forEach(faceObj => {
+                viewer.entities.add({
+                    position: faceObj.center,
+                    //point: { pixelSize: 10, color: Cesium.Color.YELLOW },
+                    label: {
+                        text: `${faceObj.faceId}`, font: "48px sans-serif",
+                        fillColor: Cesium.Color.MAGENTA.withAlpha(0.5)
+                    }
+                });
+            });
             //st.subFaces.forEach(sub => {
             //    addSubtriangle(sub);
             //});

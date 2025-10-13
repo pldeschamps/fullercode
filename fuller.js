@@ -38,13 +38,13 @@ fetch("icosaedre.json")
         window.fullerData.viewer = viewer; // Pour accès dans cesium.js
 
         // Optionally, add the center as a point entity for visualization
-        facesGeoPositions.forEach(faceObj => {
-            viewer.entities.add({
-                position: faceObj.center,
-                //point: { pixelSize: 10, color: Cesium.Color.YELLOW },
-                label: {
-                    text: `${faceObj.faceId}`, font: "48px sans-serif",
-                    fillColor: Cesium.Color.MAGENTA.withAlpha(0.5)               }
-            });
-        });
+    //    facesGeoPositions.forEach(faceObj => {
+    //        viewer.entities.add({
+    //            position: faceObj.center,
+    //            //point: { pixelSize: 10, color: Cesium.Color.YELLOW },
+    //            label: {
+    //                text: `${faceObj.faceId}`, font: "48px sans-serif",
+    //                fillColor: Cesium.Color.MAGENTA.withAlpha(0.5)               }
+    //        });
+    //    });
     });

@@ -21,6 +21,8 @@ window.viewer = new Cesium.Viewer('cesiumContainer', {
 window.scene = window.viewer.scene;
 window.viewer.scene.screenSpaceCameraController.enableTilt = false
 window.entities = window.viewer.entities;
+var level0 = viewer.entities.add(new Cesium.Entity());
+var level1 = viewer.entities.add(new Cesium.Entity());
 
 let addedSub = [];
 // Attendre que fuller.js ait chargé les données
@@ -28,28 +30,31 @@ document.addEventListener("DOMContentLoaded", () => {
     // Attendre que le JSON soit chargé (sinon facesPositions sera undefined)
     const interval = setInterval(() => {
         if (window.fullerData && window.fullerData.facesPositions) {
-            addPolygons(window.fullerData.facesPositions);
+            addPolygons(window.fullerData.facesGeoPositions,level0);
             clearInterval(interval);
         }
     }, 100);
 });
 
 
-function addPolygons(facesPositions) {
+function addPolygons(facesGeoPositions,parentEntity) {
 //    const facesPositions = window.fullerData.facesPositions;
     const viewer = window.fullerData.viewer;
-    if (!facesPositions || !viewer) return;
-    console.log("positions:", typeof facesPositions);
+    if (!facesGeoPositions || !viewer) return;
     
-    facesPositions.forEach(positions => {
-        //console.log("positions:", positions[0].x.toString());
-        addPolygon(positions);
+    //facesPositions.forEach(positions => {
+    //    //console.log("positions:", positions[0].x.toString());
+    //    addPolygon(positions);
+    facesGeoPositions.forEach(faceObj => {
+        addPolygon(faceObj.vertices, faceObj.faceId,parentEntity,faceObj.center);
     });
 }
-function addPolygon(positions) {
+function addPolygon(positions, triangleId, parentEntity,center) {
     
         //console.log("positions:", positions[0].x.toString());
-        viewer.entities.add({
+    viewer.entities.add({
+        id: triangleId,
+        parent: parentEntity,
             polygon: {
                 hierarchy: positions,
                 height: 10,
@@ -58,45 +63,21 @@ function addPolygon(positions) {
                 outlineWidth: 10,
                 outlineColor: Cesium.Color.MAGENTA
             }
-        });
-    }
-
-function addSubtriangle(fgp) {
-    const viewer = window.fullerData.viewer;
-    if (!fgp || !viewer) return;
-    console.log("subtriangle: ", typeof fgp.vertices);
-    //window.fullerData.facesPositions = facesGeoPositions.map(faceObj => faceObj.vertices);
-    const fsps = fgp.map(faceObj => faceObj.vertices);
-
-    fsps.forEach(positions => {
-        console.log("positions:", positions[0].x.toString());
-        addPolygon(positions);
     });
-}
-
-
+    viewer.entities.add({
+        parent: parentEntity,
+        position: center,
+        //point: { pixelSize: 10, color: Cesium.Color.YELLOW },
+        label: {
+            text: `${triangleId}`, font: "48px sans-serif",
+            fillColor: Cesium.Color.MAGENTA.withAlpha(0.5)
+        }
+    });
+    }
 
 // Camera change event to update lat/lon label
 function updateCameraLabel() {
     //console.log("Updating camera label");
-    //const camera = window.viewer.camera;
-    //const cartesian = camera.positionWC;
-    //const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-    //const lat = Cesium.Math.toDegrees(cartographic.latitude).toFixed(6);
-    //const lon = Cesium.Math.toDegrees(cartographic.longitude).toFixed(6);
-    ////get view mode
-    //let height = 0;
-    //const mode = scene.mode;
-    //if (mode == Cesium.SceneMode.SCENE2D) {
-    //    height = cartographic.height.toFixed(2);
-    //} else if (mode == Cesium.SceneMode.COLUMBUS_VIEW) {
-    //    height = camera.position.z;
-    //} else if (mode == Cesium.SceneMode.SCENE3D) {
-    //    height = ((camera.frustum.right - camera.frustum.near) * 0.5).toFixed(2);
-    //}
-
-    //document.getElementById("cameraLabel").innerText =
-    //    `Camera: lat ${lat}, lon ${lon}, alt ${height}`;
 
     const viewer = window.fullerData.viewer;
     const cameraCartographic = viewer.camera.positionCartographic;
@@ -141,30 +122,38 @@ function findClosestFaceCenter() {
                 closestFace = faceObj;
             }
         });
+        console.log("hide level0, show level 1");
+        level0.show = false;
+        level1.show = true;
         console.log(addedSub[0]);
         const alreadyAdded = addedSub.includes(closestFace.faceId);
         if (closestFace && !alreadyAdded) {
             addedSub.push(closestFace.faceId);
             const st = new Subtriangles(closestFace);
-            const fsps = st.subFaces.map(faceObj => faceObj.vertices);
-            addPolygons(fsps);
 
-            st.subFaces.forEach(faceObj => {
-                viewer.entities.add({
-                    position: faceObj.center,
-                    //point: { pixelSize: 10, color: Cesium.Color.YELLOW },
-                    label: {
-                        text: `${faceObj.faceId}`, font: "48px sans-serif",
-                        fillColor: Cesium.Color.MAGENTA.withAlpha(0.5)
-                    }
-                });
-            });
-            //st.subFaces.forEach(sub => {
-            //    addSubtriangle(sub);
+            //const fsps = st.subFaces.map(faceObj => faceObj.vertices);
+            //addPolygons(fsps);
+            
+            addPolygons(st.subFaces, level1);
+
+            //st.subFaces.forEach(faceObj => {
+            //    viewer.entities.add({
+            //        position: faceObj.center,
+            //        //point: { pixelSize: 10, color: Cesium.Color.YELLOW },
+            //        label: {
+            //            text: `${faceObj.faceId}`, font: "48px sans-serif",
+            //            fillColor: Cesium.Color.MAGENTA.withAlpha(0.5)
+            //        }
+            //    });
             //});
             console.log(`Closest face: ${closestFace.faceId}, distance: ${minDist}`);
-            // You can also update a label or UI here if needed
         }
+        
+    }
+    else {
+        console.log("show level0, hide level1");
+        level0.show = true;
+        level1.show = false;
     }
 }
 

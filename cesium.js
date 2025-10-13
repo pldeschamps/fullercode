@@ -19,6 +19,7 @@ window.viewer = new Cesium.Viewer('cesiumContainer', {
     moon: false,
 });
 window.scene = window.viewer.scene;
+window.viewer.scene.screenSpaceCameraController.enableTilt = false
 window.entities = window.viewer.entities;
 
 let addedSub = [];
@@ -77,15 +78,41 @@ function addSubtriangle(fgp) {
 
 // Camera change event to update lat/lon label
 function updateCameraLabel() {
-    console.log("Updating camera label");   
-    const camera = window.viewer.camera;
-    const cartesian = camera.positionWC;
-    const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
-    const lat = Cesium.Math.toDegrees(cartographic.latitude).toFixed(6);
-    const lon = Cesium.Math.toDegrees(cartographic.longitude).toFixed(6);
-    const altitude = cartographic.height.toFixed(2);
+    //console.log("Updating camera label");
+    //const camera = window.viewer.camera;
+    //const cartesian = camera.positionWC;
+    //const cartographic = Cesium.Cartographic.fromCartesian(cartesian);
+    //const lat = Cesium.Math.toDegrees(cartographic.latitude).toFixed(6);
+    //const lon = Cesium.Math.toDegrees(cartographic.longitude).toFixed(6);
+    ////get view mode
+    //let height = 0;
+    //const mode = scene.mode;
+    //if (mode == Cesium.SceneMode.SCENE2D) {
+    //    height = cartographic.height.toFixed(2);
+    //} else if (mode == Cesium.SceneMode.COLUMBUS_VIEW) {
+    //    height = camera.position.z;
+    //} else if (mode == Cesium.SceneMode.SCENE3D) {
+    //    height = ((camera.frustum.right - camera.frustum.near) * 0.5).toFixed(2);
+    //}
+
+    //document.getElementById("cameraLabel").innerText =
+    //    `Camera: lat ${lat}, lon ${lon}, alt ${height}`;
+
+    const viewer = window.fullerData.viewer;
+    const cameraCartographic = viewer.camera.positionCartographic;
+
+    const cameraCartesian = Cesium.Cartesian3.fromRadians(
+        cameraCartographic.longitude,
+        cameraCartographic.latitude,
+        cameraCartographic.height
+    );
+    const lat = Cesium.Math.toDegrees(cameraCartographic.latitude).toFixed(6);
+    const lon = Cesium.Math.toDegrees(cameraCartographic.longitude).toFixed(6);
     document.getElementById("cameraLabel").innerText =
-        `Camera: lat ${lat}, lon ${lon}, alt ${altitude}`;
+        `Camera: lat ${lat}, 
+        lon ${lon}, alt ${cameraCartographic.height}`;
+
+
 }
 
 function findClosestFaceCenter() {
@@ -95,6 +122,7 @@ function findClosestFaceCenter() {
 
     // Get camera position in Cartesian3
     const cameraCartographic = viewer.camera.positionCartographic;
+    
     const cameraCartesian = Cesium.Cartesian3.fromRadians(
         cameraCartographic.longitude,
         cameraCartographic.latitude,

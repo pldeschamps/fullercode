@@ -1,5 +1,5 @@
 class FaceGeoPositions {
-    constructor(faceId, vertices,subtrianglesIds) {
+    constructor(faceId, vertices,subtrianglesIds,parentOrientation=true) {
         this.faceId = faceId;
         this.vertices = vertices; // Array of Cesium.Cartesian3
         this.subtrianglesIds = subtrianglesIds; // String of subtriangle IDs

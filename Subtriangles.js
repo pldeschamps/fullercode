@@ -41,7 +41,7 @@ class Subtriangles {
         //  strangely, the following point is not equal to this.ab_bc
         //  this.ac_ab_b_bc = Subtriangles.midpoint(this.ac_ab, this.b_bc);
         // Why is this.ac_ab_b_bc != this.ab_bc ?
-        console.log(faceGeoPos.subtrianglesIds);
+        //console.log(faceGeoPos.subtrianglesIds);
 
         // If faceGeoPos.faceId is one character long, faceGeoPos is a face of the icosahedron,
         // and subtrianglesIds should be named according to faceGeoPos.subtrianglesIds
@@ -49,12 +49,15 @@ class Subtriangles {
         // and subtrianglesIds should be named depending on their orientation within faceGeoPos
         // to prevent their last character from being the same as their neighbours'one.
         let ids = [];
-        const up = true;
-        const down = false;
-        if (faceGeoPos.faceId.length > 1 && !facesGeoPos.parentOrientation) {
+        let up = true;
+        let down = false;
+        //console.log(faceGeoPos.faceId.length);
+        //console.log(!faceGeoPos.parentOrientation);
+        if (faceGeoPos.faceId.length > 1 && !faceGeoPos.parentOrientation) {
             // faceGeoPos is a down triangle, so we change the orientation of its subtriangles
             // according to the following Straight P-box mapping:
-            pBox = [0, 2, 1, 8, 9, 10, 7, 6, 13, 14, 15, 12, 11, 3, 4, 5];
+            //const pBox = [0, 2, 1, 8, 9, 10, 7, 6, 13, 14, 15, 12, 11, 3, 4, 5];
+            const pBox = [0, 2, 1, 8, 9, 10, 7, 6, 13, 14, 15, 12, 11, 3, 4, 5];
             for (let i = 0; i < 16; i++) {
                 ids[i] = faceGeoPos.subtrianglesIds[pBox[i]];
             }

@@ -30,9 +30,9 @@ entitiesLevels.push(level0);
 var level1 = viewer.entities.add(new Cesium.Entity());
 entitiesLevels.push(level1);
 let addedSub = [];
-// Attendre que fuller.js ait chargé les données
+// Attendre que fuller.js ait chargï¿½ les donnï¿½es
 document.addEventListener("DOMContentLoaded", () => {
-    // Attendre que le JSON soit chargé (sinon facesPositions sera undefined)
+    // Attendre que le JSON soit chargï¿½ (sinon facesPositions sera undefined)
     const interval = setInterval(() => {
         if (window.fullerData && window.fullerData.facesPositions) {
             addPolygons(window.fullerData.facesGeoPositions,entitiesLevels[0]);
@@ -56,6 +56,8 @@ function addPolygons(facesGeoPositions,parentEntity) {
     
     //facesPositions.forEach(positions => {
     //    addPolygon(positions);
+    console.log("A: ",facesGeoPositions[1].vertices);
+    console.log("C: ",facesGeoPositions[0].vertices);
     facesGeoPositions.forEach(faceObj => {
         addPolygon(faceObj.vertices, faceObj.faceId, parentEntity, faceObj.center);
         window.triangles.push(faceObj);
@@ -159,6 +161,7 @@ function findClosestFaceCenter() {
         if (closestFace && !alreadyAdded) {
             addedSub.push(closestFace.faceId);
             const st = new Subtriangles(closestFace);
+            console.log("st A: ", st.subFaces[1].vertices);
             addPolygons(st.subFaces, entitiesLevels[i+1]);
         }
         //find the next closest face for the next level
@@ -190,7 +193,7 @@ function getLevelIndex(height) {
 
     for (let i = 0; i < levels.length; i++) {
         if (height >= levels[i]) {
-            return i; // Plus grand ou égal à ce niveau
+            return i; // Plus grand ou ï¿½gal ï¿½ ce niveau
         }
     }
 

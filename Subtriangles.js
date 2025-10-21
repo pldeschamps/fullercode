@@ -26,13 +26,15 @@ class Subtriangles {
         this.ab = Subtriangles.midpoint(this.a, this.b);
         this.bc = Subtriangles.midpoint(this.b, this.c);
         this.ac = Subtriangles.midpoint(this.a, this.c);
-
+        console.log("ab: ",this.ab);
+        console.log("a: ",this.a);
         // Second-level midpoints
         this.ac_ab = Subtriangles.midpoint(this.ac, this.ab);
         this.ab_bc = Subtriangles.midpoint(this.ab, this.bc);
         this.bc_ac = Subtriangles.midpoint(this.bc, this.ac);
 
         this.a_ab = Subtriangles.midpoint(this.a, this.ab);
+        console.log("a: ",this.a);
         this.ab_b = Subtriangles.midpoint(this.ab, this.b);
         this.b_bc = Subtriangles.midpoint(this.b, this.bc);
         this.bc_c = Subtriangles.midpoint(this.bc, this.c);
@@ -69,6 +71,7 @@ class Subtriangles {
             ids = faceGeoPos.subtrianglesIds.split('');
         }
         console.log(ids[0]);
+        console.log("A: ",[this.a, this.a_ab, this.ac_a]);
         // Define 16 subtriangles (each as a FacesGeoPositions)
         this.subFaces = [
             new FaceGeoPositions(this.faceGeoPos.faceId + ids[0], [this.ac_ab, this.ab_bc, this.bc_ac], faceGeoPos.subtrianglesIds,up),

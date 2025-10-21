@@ -1,14 +1,14 @@
 // GeoPoint.js
-// Dépend de GeoCoord.js et Cartesian3.js (doivent être chargés avant ce fichier)
+// Dï¿½pend de GeoCoord.js et Cartesian3.js (doivent ï¿½tre chargï¿½s avant ce fichier)
 
 class GeoPoint {
     constructor(id, lat = null, lon = null, x = null, y = null, z = null) {
         this.id = id;
         this.geo = (lat !== null && lon !== null) ? new GeoCoord(lat, lon) : null;
-        this.cart = (x !== null && y !== null && z !== null) ? new Cartesian3(x, y, z) : null;
+        this.cart = (x !== null && y !== null && z !== null) ? new Cesium.Cartesian3(x, y, z) : null;
     }
 
-    // Calcule x, y, z à partir de lat, lon (WGS84, rayon approx. 6371 km)
+    // Calcule x, y, z ï¿½ partir de lat, lon (WGS84, rayon approx. 6371 km)
     computeXYZ(radius = 6371000) {
         if (this.geo) {
             const radLat = this.geo.lat * Math.PI / 180;
@@ -20,7 +20,7 @@ class GeoPoint {
         }
     }
 
-    // Calcule lat, lon à partir de x, y, z
+    // Calcule lat, lon ï¿½ partir de x, y, z
     computeLatLon() {
         if (this.cart) {
             const { x, y, z } = this.cart;

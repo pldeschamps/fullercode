@@ -105,6 +105,33 @@ class Subtriangles {
             (z / length) * radius
         );
     }
+    static midpointR(p1, p2, radius = 6371010) {
+    // Normalisation des vecteurs
+    const v1 = Cesium.Cartesian3.normalize(p1, new Cesium.Cartesian3());
+    const v2 = Cesium.Cartesian3.normalize(p2, new Cesium.Cartesian3());
+
+    // Angle entre les deux
+    const dot = Cesium.Cartesian3.dot(v1, v2);
+    const theta = Math.acos(Math.min(Math.max(dot, -1.0), 1.0)); // clamp pour éviter NaN
+
+    // Si points presque confondus
+    if (theta < 1e-8) return p1;
+
+    // Slerp à t = 0.5
+    const sinTheta = Math.sin(theta);
+    const w1 = Math.sin((1 - 0.5) * theta) / sinTheta;
+    const w2 = Math.sin(0.5 * theta) / sinTheta;
+
+    const x = v1.x * w1 + v2.x * w2;
+    const y = v1.y * w1 + v2.y * w2;
+    const z = v1.z * w1 + v2.z * w2;
+
+    return Cesium.Cartesian3.multiplyByScalar(
+        new Cesium.Cartesian3(x, y, z),
+        radius / Math.sqrt(x*x + y*y + z*z),
+        new Cesium.Cartesian3()
+    );
+}
 }
 
 // Make it globally available

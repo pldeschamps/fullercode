@@ -7,7 +7,7 @@ class Subtriangles {
 
      // Naming convention for points and mid-points:
      //
-     //                   0 (a)               
+     //                   a [0]               
      //                   /\                  
      //                  /1 \                 
      //            ac_a /____\  a_ab          
@@ -20,21 +20,49 @@ class Subtriangles {
      //          /\12  /\    /\    /\         
      //         /11\  /10\ 9/ 8\ 7/6 \        
      //        /____\/____\/____\/____\       
-     //   (c) 2    bc_c    bc    b_bc   1 (b) 
+     //   [2] c    bc_c    bc    b_bc   b [1] 
 
         // First-level midpoints
         this.ab = Subtriangles.midpoint(this.a, this.b);
         this.bc = Subtriangles.midpoint(this.b, this.c);
         this.ac = Subtriangles.midpoint(this.a, this.c);
-        console.log("ab: ",this.ab);
-        console.log("a: ",this.a);
+
+        // If faceGeoPos.faceId is one character long, faceGeoPos is a face of the icosahedron,
+        // and subtrianglesIds should be calculated to harmonize the surfaces of the 16 subtriangles
+
+        if (faceGeoPos.faceId.length === 1) {
+            console.log("faceGeoPos.faceId.length === 1, faceId=",faceGeoPos.faceId);
+            // calculate the gravity center of the triangle
+            const gc = Subtriangles.gravityCenter(this.a, this.b, this.c);
+            //console.log("gc: ",gc);
+            // The purpose is to get a surface of the subtriangle of index 0 equal to 1/16 of the surface of the parent triangle
+            // So we need to slightly rotate the midpoints toward the gravity center from 10.812 degrees from the center of the triangle
+            // to 9.918 degrees from the center of the triangle
+            const angle = 0.1731078136930592; // in radians, approx 9.918 degrees
+            this.ac_ab = Subtriangles.rotateTowards(gc, this.a, angle);
+            console.log("ac_ab: ",this.ac_ab);
+            this.ab_bc = Subtriangles.rotateTowards(gc, this.b, angle);
+            this.bc_ac = Subtriangles.rotateTowards(gc, this.c, angle);
+            // The purpose is to get a surface of the subtriangles of index 1, 6 and 11 equal to the surface of the subtriangles of index 3, 15, 5, 8, 10, 13
+            // So we need to rotate the vertices toward the opposite vertices of angle 0.2807418107371509 radians, 16.085 degrees
+            const angleVertex = 0.2807418107371509; // in radians, approx 16.085 degrees
+            this.c_ac = Subtriangles.rotateTowards(this.c, this.a, angleVertex);
+            this.bc_c = Subtriangles.rotateTowards(this.c, this.b, angleVertex);
+            this.a_ab = Subtriangles.rotateTowards(this.a, this.b, angleVertex);
+            this.ab_b = Subtriangles.rotateTowards(this.b, this.a, angleVertex);
+            this.b_bc = Subtriangles.rotateTowards(this.b, this.c, angleVertex);
+            this.ac_a = Subtriangles.rotateTowards(this.a, this.c, angleVertex);
+        }
+        else {
+        //console.log("ab: ",this.ab);
+        //console.log("a: ",this.a);
         // Second-level midpoints
         this.ac_ab = Subtriangles.midpoint(this.ac, this.ab);
         this.ab_bc = Subtriangles.midpoint(this.ab, this.bc);
         this.bc_ac = Subtriangles.midpoint(this.bc, this.ac);
 
         this.a_ab = Subtriangles.midpoint(this.a, this.ab);
-        console.log("a: ",this.a);
+        //console.log("a: ",this.a);
         this.ab_b = Subtriangles.midpoint(this.ab, this.b);
         this.b_bc = Subtriangles.midpoint(this.b, this.bc);
         this.bc_c = Subtriangles.midpoint(this.bc, this.c);
@@ -42,8 +70,10 @@ class Subtriangles {
         this.ac_a = Subtriangles.midpoint(this.ac, this.a);
         //  strangely, the following point is not equal to this.ab_bc
         //  this.ac_ab_b_bc = Subtriangles.midpoint(this.ac_ab, this.b_bc);
-        // Why is this.ac_ab_b_bc != this.ab_bc ?
+        // Why is this.ac_ab_b_bc != this.ab_bc ? Because in spherical geometry, it is not possible
+        // to divide a spherical triangle into four similar spherical triangles by connecting the midpoints of its sides.
         //console.log(faceGeoPos.subtrianglesIds);
+        }
 
         // If faceGeoPos.faceId is one character long, faceGeoPos is a face of the icosahedron,
         // and subtrianglesIds should be named according to faceGeoPos.subtrianglesIds
@@ -105,33 +135,77 @@ class Subtriangles {
             (z / length) * radius
         );
     }
-    static midpointR(p1, p2, radius = 6371010) {
-    // Normalisation des vecteurs
-    const v1 = Cesium.Cartesian3.normalize(p1, new Cesium.Cartesian3());
-    const v2 = Cesium.Cartesian3.normalize(p2, new Cesium.Cartesian3());
+    //statimethod to compute the gravity center of three Cesium.Cartesian3 points
+    static gravityCenter(p1, p2, p3, radius = 6371010) {
+        const x = p1.x + p2.x + p3.x;
+        const y = p1.y + p2.y + p3.y;
+        const z = p1.z + p2.z + p3.z;
+        const length = Math.sqrt(x * x + y * y + z * z);
+        return new Cesium.Cartesian3(
+            (x / length) * radius,
+            (y / length) * radius,
+            (z / length) * radius
+        );
+    }
+    //static method to compute the vectorial product normalized
+    static orthogonalVector(p1, p2) {
+        const v = Subtriangles.vectorialProduct(p1, p2);
+        return Subtriangles.normalizeVector(v);
+    }
+    //static method to normalize a Cesium.Cartesian3 vector
+    static normalizeVector(v) {
+        const length = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+        return new Cesium.Cartesian3(
+            v.x / length,
+            v.y / length,
+            v.z / length
+        );
+    }
+    //static method to compute the vectorial product of two Cesium.Cartesian3 points
+    static vectorialProduct(p1, p2) {
+        return new Cesium.Cartesian3(
+            p1.y * p2.z - p1.z * p2.y,
+            p1.z * p2.x - p1.x * p2.z,
+            p1.x * p2.y - p1.y * p2.x
+        );
+    }
+    //static method to compute the rotation of p1 toward p2 around the axis orthogonal to (p1,p2) by angle (in radians)
+    static rotateTowards(p1, p2, angle) {
+        const axis = Subtriangles.orthogonalVector(p1, p2);
+        //console.log("axis: ",axis);
+        const {x, y, z} = axis;
+        if (x === 0 && y === 0 && z === 0) return p1; // colinear case
 
-    // Angle entre les deux
-    const dot = Cesium.Cartesian3.dot(v1, v2);
-    const theta = Math.acos(Math.min(Math.max(dot, -1.0), 1.0)); // clamp pour éviter NaN
+        const cosA = Math.cos(angle);
+        const sinA = Math.sin(angle);
 
-    // Si points presque confondus
-    if (theta < 1e-8) return p1;
-
-    // Slerp à t = 0.5
-    const sinTheta = Math.sin(theta);
-    const w1 = Math.sin((1 - 0.5) * theta) / sinTheta;
-    const w2 = Math.sin(0.5 * theta) / sinTheta;
-
-    const x = v1.x * w1 + v2.x * w2;
-    const y = v1.y * w1 + v2.y * w2;
-    const z = v1.z * w1 + v2.z * w2;
-
-    return Cesium.Cartesian3.multiplyByScalar(
-        new Cesium.Cartesian3(x, y, z),
-        radius / Math.sqrt(x*x + y*y + z*z),
-        new Cesium.Cartesian3()
-    );
-}
+        const dot = p1.x * x + p1.y*y + p1.z*z;
+        console.log("p1.x: ",p1.x);
+        // Rodrigues' rotation formula
+        const term1 = [
+            p1.x * cosA,
+            p1.y * cosA,
+            p1.z * cosA
+        ];
+        console.log("term1: ",term1);
+        const term2 = [
+            (y * p1.z - z * p1.y) * sinA,
+            (z * p1.x - x * p1.z) * sinA,
+            (x * p1.y - y * p1.x) * sinA
+        ];
+        const term3 = [
+             x * dot * (1 - cosA),
+             y * dot * (1 - cosA),
+             z * dot * (1 - cosA)
+        ];
+        console.log("term1[0] + term2[0] + term3[0]: ",term1[0] + term2[0] + term3[0]);
+        return new Cesium.Cartesian3(
+            term1[0] + term2[0] + term3[0],
+            term1[1] + term2[1] + term3[1],
+            term1[2] + term2[2] + term3[2]
+        );
+        
+    }
 }
 
 // Make it globally available

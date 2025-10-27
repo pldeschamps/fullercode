@@ -4,6 +4,7 @@ class FaceGeoPositions {
         this.vertices = vertices; // Array of Cesium.Cartesian3
         this.subtrianglesIds = subtrianglesIds; // String of subtriangle IDs
         this.center = this.computeCenter();
+        this.parentOrientation = parentOrientation; // true for up, false for down
     }
 
     // Compute the centroid in Cartesian coordinates

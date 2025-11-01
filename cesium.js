@@ -4,12 +4,20 @@
 
 //Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MDk0NDgwMS03NmEzLTQ0MzQtOTc3Ny02MmNmNDg2ZGY3MTUiLCJpZCI6MzQ1MTMzLCJpYXQiOjE3NTg5OTA0MTN9.1aWmnRsHn8Z70pU5B7gJhQOLrarcr4SGf6GxTuPB0Xs';
 Cesium.Ion.defaultAccessToken = null;
+let naturalEarthLayer, osmLayer;
+// const naturalEarthProvider = await Cesium.TileMapServiceImageryProvider.fromUrl(
+//   Cesium.buildModuleUrl("Assets/Textures/NaturalEarthII")
+// );
+// const osmProvider = await Cesium.createOpenStreetMapImageryProvider({
+//   url: "https://a.tile.openstreetmap.org/"
+// });
 window.viewer = new Cesium.Viewer('cesiumContainer', {
     baseLayer: Cesium.ImageryLayer.fromProviderAsync(
         Cesium.TileMapServiceImageryProvider.fromUrl(
             Cesium.buildModuleUrl("Assets/Textures/NaturalEarthII"),
         ),
     ),
+    // imageryProvider: naturalEarthProvider,
     animation: false,
     timeline: false,
     geocoder: false,
@@ -18,7 +26,27 @@ window.viewer = new Cesium.Viewer('cesiumContainer', {
     sun: false,
     moon: false,
 });
+// naturalEarthLayer = viewer.imageryLayers.get(0);
+const cameraLabel = document.createElement("div");
+cameraLabel.id = "cameraWidget";
+cameraLabel.textContent = "Lat: -- | Lon: -- | Alt: --";
+window.viewer.container.appendChild(cameraLabel);
+
 window.scene = window.viewer.scene;
+// window.scene.globe.show = true;
+// window.scene.globe.baseColor = Cesium.Color.darkblue;
+
+// test to show Natural Earth II layer even in high alitude on mobile
+const layer = window.viewer.imageryLayers.get(0);
+  layer.show = true;
+  layer.alpha = 1.0;
+  layer.brightness = 1.2;
+
+  // 👇 désactive la coupure d’affichage aux grandes distances
+  layer.minificationFilter = Cesium.TextureMinificationFilter.LINEAR;
+  layer.magnificationFilter = Cesium.TextureMagnificationFilter.LINEAR;
+
+
 window.viewer.scene.screenSpaceCameraController.enableTilt = false
 window.entities = window.viewer.entities;
 window.LevelHeights = [6500000, 2600000, 1000000, 200000, 100000,10000,1800,700,170,50,6];
@@ -103,9 +131,10 @@ function updateCameraLabel() {
     );
     const lat = Cesium.Math.toDegrees(cameraCartographic.latitude).toFixed(6);
     const lon = Cesium.Math.toDegrees(cameraCartographic.longitude).toFixed(6);
-    document.getElementById("cameraLabel").innerText =
+    console.log("Camera Lat: ", lat, " Lon: ", lon, " Alt: ", cameraCartographic.height.toFixed(2));
+    cameraLabel.textContent =
         `Camera: lat ${lat}, 
-        lon ${lon}, alt ${cameraCartographic.height}`;
+        lon ${lon}, alt ${cameraCartographic.height.toFixed(0)}`;
 
 
 }

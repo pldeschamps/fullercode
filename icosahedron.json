@@ -102,7 +102,7 @@
     {
       "id": "V",
       "vertices": [ 12, 4, 3 ],
-      "subtrianglesids": "CT8V9XP5H2AF3M7R"
+      "subtrianglesids": "C2AF3M7RT8V9XP5H"
     },
     {
       "id": "5",
@@ -112,12 +112,12 @@
     {
       "id": "F",
       "vertices": [ 7, 5, 4 ],
-      "subtrianglesids": "C9XP5H2AF3M7RT8V"
-    },
+      "subtrianglesids": "CP5H2AF3M7RT8V9X"
+        },
     {
       "id": "S",
       "vertices": [ 8, 7, 12 ],
-      "subtrianglesids": "C9XP5H2AF3M7RT8V"
+      "subtrianglesids": "CP5H2AF3M7RT8V9X"
     },
     {
       "id": "A",
@@ -137,12 +137,12 @@
     {
       "id": "H",
       "vertices": [ 9, 6, 5 ],
-      "subtrianglesids": "C5H2AF3M7RT8V9XP"
+      "subtrianglesids": "CV9XP5H2AF3M7RT8"
     },
     {
       "id": "R",
       "vertices": [ 8, 9, 7 ],
-      "subtrianglesids": "C5H2AF3M7RT8V9XP"
+      "subtrianglesids": "CV9XP5H2AF3M7RT8"
     },
     {
       "id": "3",
@@ -152,27 +152,27 @@
     {
       "id": "T",
       "vertices": [ 11, 3, 1 ],
-      "subtrianglesids": "CM7RT8V9XP5H2AF3"
+      "subtrianglesids": "C3M7RT8V9XP5H2AF"
     },
     {
       "id": "K",
       "vertices": [ 8, 11, 10 ],
-      "subtrianglesids": "CM7RT8V9XP5H2AF3"
+      "subtrianglesids": "C3M7RT8V9XP5H2AF"
     },
     {
       "id": "7",
       "vertices": [ 10, 1, 6 ],
-      "subtrianglesids": "CAF3M7RT8V9XP5H2"
+      "subtrianglesids": "CRT8V9XP5H2AF3M7"
     },
     {
       "id": "8",
       "vertices": [ 8, 9, 10 ],
-      "subtrianglesids": "CAF3M7RT8V9XP5H2"
+      "subtrianglesids": "CRT8V9XP5H2AF3M7"
     },
     {
       "id": "2",
       "vertices": [ 8, 12, 11 ],
-      "subtrianglesids": "CT8V9XP5H2AF3M7R"
+      "subtrianglesids": "C2AF3M7RT8V9XP5H"
     }
   ]
 }

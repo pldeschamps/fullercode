@@ -7,8 +7,8 @@ html {
 	font-size: 62.5%;
 }
 body {
-	background-color: #818181;
-	color: #000;
+	background-color: #000c18;
+	color: #9966b8;
 	font-family: 'Courier New', Courier, monospace;
 	font-size: 1.4em; /* equiv 14px */
 	line-height: 1.5; /* adapt to your design */
@@ -35,18 +35,21 @@ hgroup {
 	margin: 1.5em 0 0;
 }
 h1, .h1-like {
+	color: #f280d0;
 	font-size: 1.8571em; /* equiv 26px */
 	font-weight: normal;
 	line-height: 1.6154em;
 	margin: .8077em 0 0 0;
 }
 h2, .h2-like {
+	color: #9966b8;
 	font-size: 1.7143em; /* equiv 24px */
 	font-weight: normal;
 	line-height: 1.75em;
 	margin: .875em 0 0 0;
 }
 h3, .h3-like {
+	color: #2277ff;
 	font-size: 1.5714em; /* equiv 22px */
 	font-weight: normal;
 	line-height: 1.909em;
@@ -186,4 +189,23 @@ body > script {display: none !important;}
 }
 .skip-links a:focus {
 	position: static;
+}
+/* unvisited link */
+a:link {
+  color: hotpink ;
+}
+
+/* visited link */
+a:visited {
+  color: #225588 ;
+}
+
+/* mouse over link */
+a:hover {
+  color: #f280d0;
+}
+
+/* selected link */
+a:active {
+  color: blue;
 }

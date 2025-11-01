@@ -9,7 +9,7 @@ html {
 body {
 	background-color: #000c18;
 	color: #9966b8;
-	font-family: 'Courier New', Courier, monospace;
+	font-family: Consolas, 'Courier New', Courier, monospace;
 	font-size: 1.4em; /* equiv 14px */
 	line-height: 1.5; /* adapt to your design */
 }

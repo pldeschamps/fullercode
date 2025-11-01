@@ -84,7 +84,7 @@ function addPolygon(positions, triangleId, parentEntity,center) {
         //point: { pixelSize: 10, color: Cesium.Color.YELLOW },
         label: {
             text: `${triangleId}`, font: "28px sans-serif",
-            fillColor: Cesium.Color.MAGENTA.withAlpha(0.5),
+            fillColor: Cesium.Color.MAGENTA.withAlpha(0.9),
             heightReference: 1
         }
     });

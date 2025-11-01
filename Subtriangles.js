@@ -81,11 +81,12 @@ class Subtriangles {
         // and subtrianglesIds should be named depending on their orientation within faceGeoPos
         // to prevent their last character from being the same as their neighbours'one.
         let ids = [];
-        let up = true;
-        let down = false;
+        let up = faceGeoPos.parentOrientation;
+        //let down = false;
         //console.log(faceGeoPos.faceId.length);
         //console.log(!faceGeoPos.parentOrientation);
         if (faceGeoPos.faceId.length > 1 && !faceGeoPos.parentOrientation) {
+            console.log("faceId: ",faceGeoPos.faceId, " is down");
             // faceGeoPos is a down triangle, so we change the orientation of its subtriangles
             // according to the following Straight P-box mapping:
             //const pBox = [0, 2, 1, 8, 9, 10, 7, 6, 13, 14, 15, 12, 11, 3, 4, 5];
@@ -93,8 +94,8 @@ class Subtriangles {
             for (let i = 0; i < 16; i++) {
                 ids[i] = faceGeoPos.subtrianglesIds[pBox[i]];
             }
-            up = false;
-            down = true;
+            //up = !faceGeoPos.parentOrientation;
+            //down = true;
 
         } else {
             // faceGeoPos is an up triangle, so we keep the orientation of its subtriangles
@@ -103,22 +104,23 @@ class Subtriangles {
         console.log(ids[0]);
         console.log("A: ",[this.a, this.a_ab, this.ac_a]);
         // Define 16 subtriangles (each as a FacesGeoPositions)
+        console.log("faceId: ",this.faceGeoPos.faceId + ids[0], " up: ", up);
         this.subFaces = [
             new FaceGeoPositions(this.faceGeoPos.faceId + ids[0], [this.ac_ab, this.ab_bc, this.bc_ac], faceGeoPos.subtrianglesIds,up),
             new FaceGeoPositions(this.faceGeoPos.faceId + ids[1], [this.a, this.a_ab, this.ac_a], faceGeoPos.subtrianglesIds,up),
-            new FaceGeoPositions(this.faceGeoPos.faceId + ids[2], [this.ac_ab, this.ac_a, this.a_ab], faceGeoPos.subtrianglesIds,down),
+            new FaceGeoPositions(this.faceGeoPos.faceId + ids[2], [this.ac_ab, this.ac_a, this.a_ab], faceGeoPos.subtrianglesIds,!up),
             new FaceGeoPositions(this.faceGeoPos.faceId + ids[3], [this.a_ab, this.ab, this.ac_ab], faceGeoPos.subtrianglesIds,up),
-            new FaceGeoPositions(this.faceGeoPos.faceId + ids[4], [this.ab_bc, this.ac_ab, this.ab], faceGeoPos.subtrianglesIds,down),
-            new FaceGeoPositions(this.faceGeoPos.faceId + ids[5], [this.ab, this.ab_bc, this.ab_b], faceGeoPos.subtrianglesIds,up),
+            new FaceGeoPositions(this.faceGeoPos.faceId + ids[4], [this.ab_bc, this.ac_ab, this.ab], faceGeoPos.subtrianglesIds,!up),
+            new FaceGeoPositions(this.faceGeoPos.faceId + ids[5], [this.ab, this.ab_b, this.ab_bc], faceGeoPos.subtrianglesIds,up),
             new FaceGeoPositions(this.faceGeoPos.faceId + ids[6], [this.ab_b, this.b, this.b_bc], faceGeoPos.subtrianglesIds,up),
-            new FaceGeoPositions(this.faceGeoPos.faceId + ids[7], [this.b_bc, this.ab_bc, this.ab_b], faceGeoPos.subtrianglesIds,down),
+            new FaceGeoPositions(this.faceGeoPos.faceId + ids[7], [this.b_bc, this.ab_bc, this.ab_b], faceGeoPos.subtrianglesIds,!up),
             new FaceGeoPositions(this.faceGeoPos.faceId + ids[8], [this.ab_bc, this.b_bc, this.bc], faceGeoPos.subtrianglesIds,up),
-            new FaceGeoPositions(this.faceGeoPos.faceId + ids[9], [this.bc, this.bc_ac, this.ab_bc], faceGeoPos.subtrianglesIds,down),
+            new FaceGeoPositions(this.faceGeoPos.faceId + ids[9], [this.bc, this.bc_ac, this.ab_bc], faceGeoPos.subtrianglesIds,!up),
             new FaceGeoPositions(this.faceGeoPos.faceId + ids[10], [this.bc_ac, this.bc, this.bc_c], faceGeoPos.subtrianglesIds,up),
             new FaceGeoPositions(this.faceGeoPos.faceId + ids[11], [this.c_ac, this.bc_c, this.c], faceGeoPos.subtrianglesIds,up),
-            new FaceGeoPositions(this.faceGeoPos.faceId + ids[12], [this.bc_c, this.c_ac, this.bc_ac], faceGeoPos.subtrianglesIds,down),
+            new FaceGeoPositions(this.faceGeoPos.faceId + ids[12], [this.bc_c, this.c_ac, this.bc_ac], faceGeoPos.subtrianglesIds,!up),
             new FaceGeoPositions(this.faceGeoPos.faceId + ids[13], [this.ac, this.bc_ac, this.c_ac], faceGeoPos.subtrianglesIds,up),
-            new FaceGeoPositions(this.faceGeoPos.faceId + ids[14], [this.bc_ac, this.ac, this.ac_ab], faceGeoPos.subtrianglesIds,down),
+            new FaceGeoPositions(this.faceGeoPos.faceId + ids[14], [this.bc_ac, this.ac, this.ac_ab], faceGeoPos.subtrianglesIds,!up),
             new FaceGeoPositions(this.faceGeoPos.faceId + ids[15], [this.ac_a, this.ac_ab, this.ac], faceGeoPos.subtrianglesIds,up)
         ];
     }

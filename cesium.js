@@ -143,48 +143,78 @@ function findClosestFaceCenter() {
 
 
     let minDist = Number.POSITIVE_INFINITY;
+    let secondMinDist = Number.POSITIVE_INFINITY;
     let closestFace = null;
+    let secondClosestFace = null;
 
     facesGeoPositions.forEach(faceObj => {
         const dist = Cesium.Cartesian3.distance(cameraCartesian, faceObj.center);
-        if (dist < minDist) {
-            minDist = dist;
-            closestFace = faceObj;
+        if (dist < secondMinDist) {
+            if (dist < minDist) {
+                secondMinDist = minDist;
+                secondClosestFace = closestFace;
+                minDist = dist;
+                closestFace = faceObj;
+            } else {
+                secondMinDist = dist;
+                secondClosestFace = faceObj;
+            }
         }
     });
-    //check, at each level, if the closest face subtriangles are already added
+    //check, at each level, if the two closest subtriangles are already added
     for (let i = 0; i < levelIndex; i++) {
 
-        const alreadyAdded = addedSub.includes(closestFace.faceId);
-        console.log("closestFace: ", closestFace.faceId);
-        console.log("alreadyAdded: ", alreadyAdded);
+        let alreadyAdded = addedSub.includes(closestFace.faceId);
+        //console.log("closestFace: ", closestFace.faceId);
+        //console.log("alreadyAdded: ", alreadyAdded);
+        let st;
         if (closestFace && !alreadyAdded) {
             addedSub.push(closestFace.faceId);
-            const st = new Subtriangles(closestFace);
+            st = new Subtriangles(closestFace);
             console.log("st A: ", st.subFaces[1].vertices);
+            addPolygons(st.subFaces, entitiesLevels[i+1]);
+        }
+        alreadyAdded = addedSub.includes(secondClosestFace.faceId);
+        if (secondClosestFace && !alreadyAdded) {
+            addedSub.push(secondClosestFace.faceId);
+            st = new Subtriangles(secondClosestFace);
             addPolygons(st.subFaces, entitiesLevels[i+1]);
         }
         //find the next closest face for the next level
         let nextMinDist = Number.POSITIVE_INFINITY;
         let nextClosestFace = null;
+        let nextSecondMinDist = Number.POSITIVE_INFINITY;
+        let nextSecondClosestFace = null;
         window.triangles.forEach(faceObj => {
-            if (faceObj.faceId.startsWith(closestFace.faceId) && faceObj.faceId.length === closestFace.faceId.length + 1) {
+            if (faceObj.faceId.startsWith(closestFace.faceId) && faceObj.faceId.length === closestFace.faceId.length + 1
+                || faceObj.faceId.startsWith(secondClosestFace.faceId) && faceObj.faceId.length === secondClosestFace.faceId.length + 1) {
                 //console.log("faceObj.faceId: ", faceObj.faceId);
                 const dist = Cesium.Cartesian3.distance(cameraCartesian, faceObj.center);
                 //console.log("dist: ", dist);
 
                 //if (dist < nextMinDist && dist > minDist) {
-                if (dist < nextMinDist ) {
-                    nextMinDist = dist;
-                    nextClosestFace = faceObj;
+                if (dist < nextSecondMinDist ) {
+                    if (dist < nextMinDist) {
+                        nextSecondMinDist = nextMinDist;
+                        nextSecondClosestFace = nextClosestFace;
+                        nextMinDist = dist;
+                        nextClosestFace = faceObj;
+                    } else {
+                        nextSecondMinDist = dist;
+                        nextSecondClosestFace = faceObj;
+                    }
                 }
-                console.log("closest: ", nextClosestFace.faceId);
+                
             }
         }
 
         );
         minDist = nextMinDist;
+        secondMinDist = nextSecondMinDist;
         closestFace = nextClosestFace;
+        secondClosestFace = nextSecondClosestFace;
+        console.log("closest: ", closestFace.faceId);
+        console.log("second closest: ", secondClosestFace.faceId);
     }
 }
 

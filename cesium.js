@@ -4,20 +4,20 @@
 
 //Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI1MDk0NDgwMS03NmEzLTQ0MzQtOTc3Ny02MmNmNDg2ZGY3MTUiLCJpZCI6MzQ1MTMzLCJpYXQiOjE3NTg5OTA0MTN9.1aWmnRsHn8Z70pU5B7gJhQOLrarcr4SGf6GxTuPB0Xs';
 Cesium.Ion.defaultAccessToken = null;
-let naturalEarthLayer, osmLayer;
+
 // const naturalEarthProvider = await Cesium.TileMapServiceImageryProvider.fromUrl(
 //   Cesium.buildModuleUrl("Assets/Textures/NaturalEarthII")
 // );
-// const osmProvider = await Cesium.createOpenStreetMapImageryProvider({
-//   url: "https://a.tile.openstreetmap.org/"
-// });
+const osm = new Cesium.OpenStreetMapImageryProvider({
+    url : 'https://tile.openstreetmap.org/'
+});
 window.viewer = new Cesium.Viewer('cesiumContainer', {
-    baseLayer: Cesium.ImageryLayer.fromProviderAsync(
-        Cesium.TileMapServiceImageryProvider.fromUrl(
-            Cesium.buildModuleUrl("Assets/Textures/NaturalEarthII"),
-        ),
-    ),
-    // imageryProvider: naturalEarthProvider,
+    // baseLayer: Cesium.ImageryLayer.fromProviderAsync(
+    //     Cesium.TileMapServiceImageryProvider.fromUrl(
+    //         Cesium.buildModuleUrl("Assets/Textures/NaturalEarthII"),
+    //     ),
+    // ),
+    imageryProvider: osm,
     animation: false,
     timeline: false,
     geocoder: false,
@@ -26,7 +26,8 @@ window.viewer = new Cesium.Viewer('cesiumContainer', {
     sun: false,
     moon: false,
 });
-// naturalEarthLayer = viewer.imageryLayers.get(0);
+window.viewer.imageryLayers.addImageryProvider(osm);
+//window.viewer.imageryLayers.raiseToTop(osm);
 const cameraLabel = document.createElement("div");
 cameraLabel.id = "cameraWidget";
 cameraLabel.textContent = "Lat: -- | Lon: -- | Alt: --";
@@ -49,7 +50,7 @@ const layer = window.viewer.imageryLayers.get(0);
 
 window.viewer.scene.screenSpaceCameraController.enableTilt = false
 window.entities = window.viewer.entities;
-window.LevelHeights = [6500000, 2600000, 1000000, 200000, 100000,10000,1800,700,170,50,6];
+window.LevelHeights = [6500000, 2600000, 1000000, 200000, 100000,10000,1800,700,170,50];
 window.triangles = []; // To store subdivided triangles
 
 const entitiesLevels = [];
@@ -101,7 +102,7 @@ function addPolygon(positions, triangleId, parentEntity,center) {
                 height: 1,
                 material: Cesium.Color.BLUE.withAlpha(0.05),
                 outline: true,
-                outlineWidth: 10,
+                outlineWidth: 5,
                 outlineColor: Cesium.Color.MAGENTA
             }
     });

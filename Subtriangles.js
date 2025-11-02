@@ -89,9 +89,9 @@ class Subtriangles {
             console.log("faceId: ",faceGeoPos.faceId, " is down");
             // faceGeoPos is a down triangle, so we change the orientation of its subtriangles
             // according to the following Straight P-box mapping:
-            //original pattern: 0, 1, 2, 3, 4, 5,  6, 7, 8,  9,  10, 11, 12, 13, 14, 15
-            //    const pBox = [0, 2, 1, 8, 9, 10, 7, 6, 13, 14, 15, 12, 11, 3,  4,  5];
-            const pBox = [0, 2, 1, 8, 9, 10, 12, 11, 13, 14, 15, 7, 6, 3, 4, 5];
+            //original pattern: 0, 1, 2, 3, 4, 5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15
+            const pBox =       [0, 2, 1, 8, 9, 10, 7,  6,  13, 14, 15, 12, 11, 3,  4,  5];
+            //    const pBox = [0, 2, 1, 8, 9, 10, 12, 11, 13, 14, 15, 7,  6,  3,  4,  5];
             for (let i = 0; i < 16; i++) {
                 ids[i] = faceGeoPos.subtrianglesIds[pBox[i]];
             }

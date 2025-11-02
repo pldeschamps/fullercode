@@ -106,13 +106,14 @@ function addPolygon(positions, triangleId, parentEntity,center) {
                 outlineColor: Cesium.Color.MAGENTA
             }
     });
+    const labelFont = (32 - triangleId.length).toString()+"px Consolas";
     viewer.entities.add({
         id: "label " + triangleId,
         parent: parentEntity,
         position: center,
         //point: { pixelSize: 10, color: Cesium.Color.YELLOW },
         label: {
-            text: `${triangleId}`, font: "28px sans-serif",
+            text: `${triangleId}`, font: labelFont,
             fillColor: Cesium.Color.MAGENTA.withAlpha(0.9),
             heightReference: 1
         }

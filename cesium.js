@@ -32,6 +32,10 @@ const cameraLabel = document.createElement("div");
 cameraLabel.id = "cameraWidget";
 cameraLabel.textContent = "Lat: -- | Lon: -- | Alt: --";
 window.viewer.container.appendChild(cameraLabel);
+const fullerCodeLabel = document.createElement("div");
+fullerCodeLabel.id = "fullerCodeWidget";
+fullerCodeLabel.textContent = "fullercode: ";
+window.viewer.container.appendChild(fullerCodeLabel);
 
 window.scene = window.viewer.scene;
 // window.scene.globe.show = true;
@@ -244,6 +248,8 @@ function findClosestFaceCenter() {
         secondMinDist = nextSecondMinDist;
         closestFace = nextClosestFace;
         secondClosestFace = nextSecondClosestFace;
+        fullerCodeLabel.textContent =
+        `fullercode: ${closestFace.faceId}`; 
         console.log("closest: ", closestFace.faceId);
         console.log("second closest: ", secondClosestFace.faceId);
     }

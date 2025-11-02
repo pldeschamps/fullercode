@@ -31,8 +31,21 @@ html,body{width: 100%;
   position: absolute;
   top: 10px;
   left: 10px;
-  background: rgba(10, 2, 122, 0.6);
-  color: #ff06d5;
+  background: rgba(10, 2, 122, 0.8);
+  color: #fc56e0;
+  font-family: monospace;
+  font-size: 1.4em;
+  padding: 6px 10px;
+  border-radius: 6px;
+  pointer-events: none; /* ne bloque pas les clics sur la carte */
+  z-index: 100000;
+}
+#fullerCodeWidget {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+  background: rgba(10, 2, 122, 0.8);
+  color: #56fc8d;
   font-family: monospace;
   font-size: 1.4em;
   padding: 6px 10px;

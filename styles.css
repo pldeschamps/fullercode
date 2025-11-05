@@ -57,8 +57,22 @@ html,body{width: 100%;
   font-size: 1.4em;
   padding: 6px 10px;
   border-radius: 6px;
-  pointer-events: none; /* ne bloque pas les clics sur la carte */
   z-index: 100000;
+}
+
+#fullerCodeInput {
+  position: absolute;
+  top: 110px;
+  left: 10px;
+  background: rgba(10, 2, 122, 0.8);
+  color: #f0ff6a;
+  font-family: monospace;
+  font-size: 1.4em;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #f0ff6a;
+  z-index: 100000;
+  width: 200px;
 }
 body{
 margin:0;

@@ -37,6 +37,77 @@ fullerCodeLabel.id = "fullerCodeWidget";
 fullerCodeLabel.textContent = "fullercode: ";
 window.viewer.container.appendChild(fullerCodeLabel);
 
+const fullerCodeInput = document.createElement("input");
+fullerCodeInput.id = "fullerCodeInput";
+fullerCodeInput.type = "text";
+fullerCodeInput.placeholder = "Enter fullercode...";
+window.viewer.container.appendChild(fullerCodeInput);
+let cameraHeight = 100000;
+// Enforce uppercase and allowed-character rules:
+// - first character allowed set: "CM3FA2H5PX9V8TR7NSJK"
+// - following characters allowed set: "CM3FA2H5PX9V8TR7"
+const MAX_FULLERCODE_LEN = 16;
+const ALLOWED_FIRST = "CM3FA2H5PX9V8TR7NSJK";
+const ALLOWED_REST = "CM3FA2H5PX9V8TR7";
+fullerCodeInput.maxLength = MAX_FULLERCODE_LEN;
+fullerCodeInput.addEventListener('input', function (e) {
+    // force uppercase and filter invalid characters
+    const raw = (this.value || '').toUpperCase();
+    let filtered = '';
+    for (let i = 0; i < raw.length && filtered.length < MAX_FULLERCODE_LEN; i++) {
+        const ch = raw[i];
+        if (i === 0) {
+            if (ALLOWED_FIRST.indexOf(ch) !== -1) filtered += ch;
+        } else {
+            if (ALLOWED_REST.indexOf(ch) !== -1) filtered += ch;
+        }
+    }
+
+    // If filtering removed or changed characters, update the input value
+    if (this.value !== filtered) {
+        this.value = filtered;
+    }
+
+    // adjust camera height heuristically based on code length (keeps previous behaviour)
+    if (filtered.length > 1) {
+        const idx = Math.min(filtered.length - 1, window.LevelHeights.length - 1);
+        const prevIdx = Math.max(filtered.length - 2, 0);
+        cameraHeight = (window.LevelHeights[idx] + window.LevelHeights[prevIdx]) / 2;
+    }  else {
+        cameraHeight = 7000000; // default
+    }
+});
+
+fullerCodeInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        const code = this.value.trim();
+        if (code.length>0) {
+            // Find the triangle with matching fullercode
+            const targetTriangle = window.triangles.find(t => t.faceId === code);
+            if (targetTriangle) {
+                // Convert center position to get latitude and longitude
+                const cartographic = Cesium.Cartographic.fromCartesian(targetTriangle.center);
+                const destinationPosition = Cesium.Cartesian3.fromRadians(
+                    cartographic.longitude,
+                    cartographic.latitude,
+                    cameraHeight // Setting height to 100km
+                );
+                // Move camera to the target triangle's center with specified height
+                window.viewer.camera.flyTo({
+                    destination: destinationPosition,
+                    orientation: {
+                        heading: 0.0,
+                        pitch: -Cesium.Math.PI_OVER_TWO,
+                        roll: 0.0
+                    }
+                });
+            } else {
+                console.log('Fullercode not found:', code);
+            }
+        }
+    }
+});
+
 window.scene = window.viewer.scene;
 // window.scene.globe.show = true;
 // window.scene.globe.baseColor = Cesium.Color.darkblue;

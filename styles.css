@@ -12,20 +12,27 @@ html,body{width: 100%;
   padding: 0;
   overflow-x: hidden;}
   #cesiumContainer{
-  position:relative;
-    width: 100%;
+  position:fixed;
+    width: 100vw;
   height: 650px;
   margin: 0;
   padding: 0;
   overflow: hidden;}
 #cesiumContainer:fullscreen,
  :-webkit-full-screen #cesiumContainer {
-      width: 100%;
-      height: 100%;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
     }
-#cesiumContainer:fullscreen ~ *,
+/* #cesiumContainer:fullscreen ~ *,
 :-webkit-full-screen #cesiumContainer ~ * {
   display: none;
+} */
+:fullscreen body > *:not(#cesiumContainer),
+:-webkit-full-screen body > *:not(#cesiumContainer) {
+  display: none !important;
 }
 #cameraWidget {
   position: absolute;

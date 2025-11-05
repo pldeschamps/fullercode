@@ -54,7 +54,7 @@ const layer = window.viewer.imageryLayers.get(0);
 
 window.viewer.scene.screenSpaceCameraController.enableTilt = false
 window.entities = window.viewer.entities;
-window.LevelHeights = [6500000, 2600000, 1000000, 200000, 100000,10000,1800,700,170,50];
+window.LevelHeights = [6500000, 2600000, 1000000, 200000, 100000,10000,1800,700,170,50,10];
 window.triangles = []; // To store subdivided triangles
 
 const entitiesLevels = [];

@@ -46,7 +46,7 @@ let cameraHeight = 100000;
 // Enforce uppercase and allowed-character rules:
 // - first character allowed set: "CM3FA2H5PX9V8TR7NSJK"
 // - following characters allowed set: "CM3FA2H5PX9V8TR7"
-const MAX_FULLERCODE_LEN = 16;
+const MAX_FULLERCODE_LEN = 12;
 const ALLOWED_FIRST = "CM3FA2H5PX9V8TR7NSJK";
 const ALLOWED_REST = "CM3FA2H5PX9V8TR7";
 fullerCodeInput.maxLength = MAX_FULLERCODE_LEN;
@@ -119,6 +119,96 @@ fullerCodeInput.addEventListener('keypress', function(e) {
 });
 
 window.scene = window.viewer.scene;
+
+// Parse a fullercode from the URL and attempt to fly to it.
+// Acceptable URL formats:
+//  - https://example.com/?MAXTT5V
+//  - https://example.com/@MAXTT5V
+//  - any location containing '?CODE' or '/@CODE'
+// function parseFullercodeFromUrl() {
+//     const MAX = MAX_FULLERCODE_LEN;
+//     // try search/query (e.g. ?MAXTT5V or ?code=MAXTT5V)
+//     let code = null;
+//     if (window.location.search && window.location.search.length > 1) {
+//         // If search is like ?MAXTT5V (no key), take substring after '?'
+//         const raw = window.location.search.substring(1);
+//         // If there's an '=' then it's a normal query param; look for a value that looks like a code
+//         if (raw.indexOf('=') === -1) {
+//             code = raw.split('&')[0];
+//         } else {
+//             // find any value that matches permitted characters
+//             const pairs = raw.split('&');
+//             for (const p of pairs) {
+//                 const parts = p.split('=');
+//                 if (parts.length === 2 && parts[1]) {
+//                     // use the value if it contains only allowed chars (after uppercasing)
+//                     const val = parts[1].toUpperCase().replace(/[^A-Z0-9]/g,'');
+//                     if (val.length > 0) { code = val; break; }
+//                 }
+//             }
+//         }
+//     }
+
+//     // try path style like /@MAXTT5V or any '@' in the href
+//     if (!code) {
+//         const href = window.location.href;
+//         const atIndex = href.indexOf('/@');
+//         const at2 = href.indexOf('@');
+//         let idx = -1;
+//         if (atIndex !== -1) idx = atIndex + 2; // after '/@'
+//         else if (at2 !== -1) idx = at2 + 1; // after '@'
+//         if (idx !== -1) {
+//             // take up to MAX characters, stop at slash, questionmark, ampersand or end
+//             let substr = href.substring(idx);
+//             const stop = substr.search(/[\/?&#]/);
+//             if (stop !== -1) substr = substr.substring(0, stop);
+//             code = substr;
+//         }
+//     }
+
+//     if (!code) return null;
+//     code = code.toUpperCase().replace(/[^A-Z0-9]/g,'').substring(0, MAX);
+//     return code;
+// }
+
+// function tryFlyToCodeFromUrl() {
+//     const code = parseFullercodeFromUrl();
+//     if (!code) return;
+//     console.log('Found code in URL:', code);
+//     // Put code into input (this will be filtered/validated by input handler)
+//     fullerCodeInput.value = code;
+//     fullerCodeInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+//     // Try to fly when triangles are available. Retry a few times if necessary.
+//     let attempts = 0;
+//     const maxAttempts = 50; // ~5 seconds at 100ms
+//     const iv = setInterval(() => {
+//         attempts++;
+//         if (window.triangles && window.triangles.length > 0) {
+//             clearInterval(iv);
+//             const target = window.triangles.find(t => t.faceId === fullerCodeInput.value);
+//             if (target) {
+//                 console.log('Flying to code from URL:', fullerCodeInput.value);
+//                 // reuse cameraHeight computed by input handler
+//                 const cartographic = Cesium.Cartographic.fromCartesian(target.center);
+//                 const destinationPosition = Cesium.Cartesian3.fromRadians(
+//                     cartographic.longitude,
+//                     cartographic.latitude,
+//                     cameraHeight
+//                 );
+//                 window.viewer.camera.flyTo({ destination: destinationPosition, orientation: { heading: 0.0, pitch: -Cesium.Math.PI_OVER_TWO, roll: 0.0 } });
+//             } else {
+//                 console.log('Fullercode from URL not found among loaded triangles:', fullerCodeInput.value);
+//             }
+//         } else if (attempts >= maxAttempts) {
+//             clearInterval(iv);
+//             console.log('Timed out waiting for triangles to load to fly to URL code.');
+//         }
+//     }, 100);
+// }
+
+// Run once at load
+// tryFlyToCodeFromUrl();
 // window.scene.globe.show = true;
 // window.scene.globe.baseColor = Cesium.Color.darkblue;
 

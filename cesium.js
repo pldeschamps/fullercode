@@ -83,7 +83,17 @@ fullerCodeInput.addEventListener('keypress', function(e) {
         const code = this.value.trim();
         if (code.length>0) {
             // Find the triangle with matching fullercode
-            const targetTriangle = window.triangles.find(t => t.faceId === code);
+            let targetTriangle = window.triangles.find(t => t.faceId === code);
+            if(!targetTriangle){
+                createLevels(code.length); // code.length-2 ?
+                for (let i=1; i<=code.length; i++){
+                    console.log("Creating subtriangle for: ", code.substring(0,i));
+                    const subTriangle = window.triangles.find(t => t.faceId === code.substring(0,i));
+                    console.log("subTriangle: ", subTriangle);
+                    addSubtriangles(subTriangle, i-1);
+                }
+            }
+            targetTriangle = window.triangles.find(t => t.faceId === code);
             if (targetTriangle) {
                 // Convert center position to get latitude and longitude
                 const cartographic = Cesium.Cartographic.fromCartesian(targetTriangle.center);
@@ -234,12 +244,7 @@ function findClosestFaceCenter() {
     console.log("entitiesLevels.length: ", entitiesLevels.length);
 
     //create levels if not exist
-    for (let i = entitiesLevels.length; i <= levelIndex; i++) {
-        console.log("Creating level:", i);
-        var level = viewer.entities.add(new Cesium.Entity());
-        entitiesLevels.push(level);
-
-    }
+    createLevels(levelIndex);
     //hide all levels except current
     for (let i = 0; i < entitiesLevels.length; i++) {
         entitiesLevels[i].show = (i === levelIndex);
@@ -270,23 +275,11 @@ function findClosestFaceCenter() {
     //check, at each level, if the two closest subtriangles are already added
     for (let i = 0; i < levelIndex; i++) {
 
-        let alreadyAdded = addedSub.includes(closestFace.faceId);
-        //console.log("closestFace: ", closestFace.faceId);
-        //console.log("alreadyAdded: ", alreadyAdded);
-        let st;
-        if (closestFace && !alreadyAdded) {
-            addedSub.push(closestFace.faceId);
-            st = new Subtriangles(closestFace);
-            console.log("st A: ", st.subFaces[1].vertices);
-            addPolygons(st.subFaces, entitiesLevels[i+1]);
-        }
-        alreadyAdded = addedSub.includes(secondClosestFace.faceId);
-        if (secondClosestFace && !alreadyAdded) {
-            addedSub.push(secondClosestFace.faceId);
-            st = new Subtriangles(secondClosestFace);
-            addPolygons(st.subFaces, entitiesLevels[i+1]);
-        }
-        //find the next closest face for the next level
+        
+        addSubtriangles(closestFace, i);
+        addSubtriangles(secondClosestFace, i);
+        
+        //find the next closest faces for the next level
         let nextMinDist = Number.POSITIVE_INFINITY;
         let nextClosestFace = null;
         let nextSecondMinDist = Number.POSITIVE_INFINITY;
@@ -323,6 +316,30 @@ function findClosestFaceCenter() {
         `fullercode: ${closestFace.faceId}`; 
         console.log("closest: ", closestFace.faceId);
         console.log("second closest: ", secondClosestFace.faceId);
+    }
+}
+
+function addSubtriangles(closestFace, i) {
+    let alreadyAdded;
+    alreadyAdded = addedSub.includes(closestFace.faceId);
+    //console.log("closestFace: ", closestFace.faceId);
+    //console.log("alreadyAdded: ", alreadyAdded);
+    if (closestFace && !alreadyAdded) {
+        addedSub.push(closestFace.faceId);
+        let st;
+        st = new Subtriangles(closestFace);
+        console.log("st A: ", st.subFaces[1].vertices);
+        addPolygons(st.subFaces, entitiesLevels[i + 1]);
+    }
+}
+
+function createLevels(levelIndex) {
+    const viewer = window.fullerData.viewer;
+    for (let i = entitiesLevels.length; i <= levelIndex; i++) {
+        console.log("Creating level:", i);
+        var level = viewer.entities.add(new Cesium.Entity());
+        entitiesLevels.push(level);
+
     }
 }
 

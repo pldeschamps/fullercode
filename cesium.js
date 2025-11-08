@@ -81,42 +81,73 @@ fullerCodeInput.addEventListener('input', function (e) {
 fullerCodeInput.addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         const code = this.value.trim();
-        if (code.length>0) {
-            // Find the triangle with matching fullercode
-            let targetTriangle = window.triangles.find(t => t.faceId === code);
-            if(!targetTriangle){
-                createLevels(code.length); // code.length-2 ?
-                for (let i=1; i<=code.length; i++){
-                    console.log("Creating subtriangle for: ", code.substring(0,i));
-                    const subTriangle = window.triangles.find(t => t.faceId === code.substring(0,i));
-                    console.log("subTriangle: ", subTriangle);
-                    addSubtriangles(subTriangle, i-1);
-                }
-            }
-            targetTriangle = window.triangles.find(t => t.faceId === code);
-            if (targetTriangle) {
-                // Convert center position to get latitude and longitude
-                const cartographic = Cesium.Cartographic.fromCartesian(targetTriangle.center);
-                const destinationPosition = Cesium.Cartesian3.fromRadians(
-                    cartographic.longitude,
-                    cartographic.latitude,
-                    cameraHeight // Setting height to 100km
-                );
-                // Move camera to the target triangle's center with specified height
-                window.viewer.camera.flyTo({
-                    destination: destinationPosition,
-                    orientation: {
-                        heading: 0.0,
-                        pitch: -Cesium.Math.PI_OVER_TWO,
-                        roll: 0.0
-                    }
-                });
-            } else {
-                console.log('Fullercode not found:', code);
-            }
-        }
+        flyToCode(code);
     }
 });
+
+function flyToCode(code) {
+    // Safety checks
+    if (!code || code.length === 0)  {
+        console.log('invalid code');
+        return;
+    } else {
+        if (!window.fullerData || !window.fullerData.viewer) {
+            console.log('Cannot fly: data not ready');
+            return;
+        }
+    }
+   
+
+    // Find the triangle with matching fullercode
+    let targetTriangle = window.triangles.find(t => t.faceId === code);
+    
+    // If not found, try to create the necessary subtriangles
+    if (!targetTriangle) {
+        try {
+            createLevels(code.length);
+            for (let i = 1; i <= code.length; i++) {
+                const partialCode = code.substring(0, i);
+                console.log("Creating subtriangle for:", partialCode);
+                const subTriangle = window.triangles.find(t => t.faceId === partialCode);
+                if (subTriangle) {
+                    addSubtriangles(subTriangle, i-1);
+                } else {
+                    console.log('Could not find parent triangle for:', partialCode);
+                }
+            }
+            // Try to find the target triangle again
+            targetTriangle = window.triangles.find(t => t.faceId === code);
+        } catch (e) {
+            console.error('Error creating subtriangles:', e);
+        }
+    }
+
+    if (targetTriangle) {
+        try {
+            // Convert center position to get latitude and longitude
+            const cartographic = Cesium.Cartographic.fromCartesian(targetTriangle.center);
+            const destinationPosition = Cesium.Cartesian3.fromRadians(
+                cartographic.longitude,
+                cartographic.latitude,
+                cameraHeight // Use height computed by input handler
+            );
+            // Move camera to the target triangle's center with specified height
+            window.viewer.camera.flyTo({
+                destination: destinationPosition,
+                orientation: {
+                    heading: 0.0,
+                    pitch: -Cesium.Math.PI_OVER_TWO,
+                    roll: 0.0
+                }
+            });
+        } catch (e) {
+            console.error('Error flying to triangle:', e);
+        }
+    } else {
+        console.log('Fullercode not found:', code);
+    }
+}
+
 
 window.scene = window.viewer.scene;
 
@@ -125,51 +156,56 @@ window.scene = window.viewer.scene;
 //  - https://example.com/?MAXTT5V
 //  - https://example.com/@MAXTT5V
 //  - any location containing '?CODE' or '/@CODE'
-// function parseFullercodeFromUrl() {
-//     const MAX = MAX_FULLERCODE_LEN;
-//     // try search/query (e.g. ?MAXTT5V or ?code=MAXTT5V)
-//     let code = null;
-//     if (window.location.search && window.location.search.length > 1) {
-//         // If search is like ?MAXTT5V (no key), take substring after '?'
-//         const raw = window.location.search.substring(1);
-//         // If there's an '=' then it's a normal query param; look for a value that looks like a code
-//         if (raw.indexOf('=') === -1) {
-//             code = raw.split('&')[0];
-//         } else {
-//             // find any value that matches permitted characters
-//             const pairs = raw.split('&');
-//             for (const p of pairs) {
-//                 const parts = p.split('=');
-//                 if (parts.length === 2 && parts[1]) {
-//                     // use the value if it contains only allowed chars (after uppercasing)
-//                     const val = parts[1].toUpperCase().replace(/[^A-Z0-9]/g,'');
-//                     if (val.length > 0) { code = val; break; }
-//                 }
-//             }
-//         }
-//     }
+function parseFullercodeFromUrl() {
+    const MAX = MAX_FULLERCODE_LEN;
+    let code = null;
 
-//     // try path style like /@MAXTT5V or any '@' in the href
-//     if (!code) {
-//         const href = window.location.href;
-//         const atIndex = href.indexOf('/@');
-//         const at2 = href.indexOf('@');
-//         let idx = -1;
-//         if (atIndex !== -1) idx = atIndex + 2; // after '/@'
-//         else if (at2 !== -1) idx = at2 + 1; // after '@'
-//         if (idx !== -1) {
-//             // take up to MAX characters, stop at slash, questionmark, ampersand or end
-//             let substr = href.substring(idx);
-//             const stop = substr.search(/[\/?&#]/);
-//             if (stop !== -1) substr = substr.substring(0, stop);
-//             code = substr;
-//         }
-//     }
+    // 1) Check hash fragment first (safe for static servers): e.g. index.html#@MTV or index.html#MTV
+    if (window.location.hash && window.location.hash.length > 1) {
+        // remove leading '#'
+        let h = window.location.hash.substring(1);
+        // allow optional leading '@'
+        if (h.startsWith('@')) h = h.substring(1);
+        if (h.length > 0) code = h.split(/[\/?&#]/)[0];
+    }
 
-//     if (!code) return null;
-//     code = code.toUpperCase().replace(/[^A-Z0-9]/g,'').substring(0, MAX);
-//     return code;
-// }
+    // 2) then query/search (e.g. ?MAXTT5V or ?code=MAXTT5V)
+    if (!code && window.location.search && window.location.search.length > 1) {
+        const raw = window.location.search.substring(1);
+        if (raw.indexOf('=') === -1) {
+            code = raw.split('&')[0];
+        } else {
+            const pairs = raw.split('&');
+            for (const p of pairs) {
+                const parts = p.split('=');
+                if (parts.length === 2 && parts[1]) {
+                    const val = parts[1].toUpperCase().replace(/[^A-Z0-9]/g,'');
+                    if (val.length > 0) { code = val; break; }
+                }
+            }
+        }
+    }
+
+    // 3) fallback: look for '@' in href (works only if server serves the path back to index.html)
+    if (!code) {
+        const href = window.location.href;
+        const atIndex = href.indexOf('/@');
+        const at2 = href.indexOf('@');
+        let idx = -1;
+        if (atIndex !== -1) idx = atIndex + 2; // after '/@'
+        else if (at2 !== -1) idx = at2 + 1; // after '@'
+        if (idx !== -1) {
+            let substr = href.substring(idx);
+            const stop = substr.search(/[\/?&#]/);
+            if (stop !== -1) substr = substr.substring(0, stop);
+            code = substr;
+        }
+    }
+
+    if (!code) return null;
+    code = code.toUpperCase().replace(/[^A-Z0-9]/g,'').substring(0, MAX);
+    return code;
+}
 
 // function tryFlyToCodeFromUrl() {
 //     const code = parseFullercodeFromUrl();
@@ -236,10 +272,25 @@ entitiesLevels.push(level1);
 let addedSub = [];
 // Attendre que fuller.js ait charg� les donn�es
 document.addEventListener("DOMContentLoaded", () => {
+    let initCode = parseFullercodeFromUrl();
     // Attendre que le JSON soit charg� (sinon facesPositions sera undefined)
     const interval = setInterval(() => {
         if (window.fullerData && window.fullerData.facesPositions) {
-            addPolygons(window.fullerData.facesGeoPositions,entitiesLevels[0]);
+            console.log('Data loaded, initializing...');
+            addPolygons(window.fullerData.facesGeoPositions, entitiesLevels[0]);
+            
+            // Only try to process the code after data is loaded
+            if (initCode) {
+                console.log('Processing URL code:', initCode);
+                fullerCodeInput.value = initCode;
+                fullerCodeInput.dispatchEvent(new Event('input', { bubbles: true }));
+                // Give a small delay to ensure polygons are properly added
+                setTimeout(() => {
+                    console.log('Flying to initial code location');
+                    flyToCode(initCode);
+                }, 1000);
+            }
+            
             clearInterval(interval);
         }
     }, 100);
@@ -410,14 +461,14 @@ function findClosestFaceCenter() {
 }
 
 function addSubtriangles(closestFace, i) {
-    let alreadyAdded;
-    alreadyAdded = addedSub.includes(closestFace.faceId);
+    if (!closestFace || !window.fullerData || !window.fullerData.viewer) return;
+    
+    let alreadyAdded = addedSub.includes(closestFace.faceId);
     //console.log("closestFace: ", closestFace.faceId);
     //console.log("alreadyAdded: ", alreadyAdded);
-    if (closestFace && !alreadyAdded) {
+    if (!alreadyAdded) {
         addedSub.push(closestFace.faceId);
-        let st;
-        st = new Subtriangles(closestFace);
+        let st = new Subtriangles(closestFace);
         console.log("st A: ", st.subFaces[1].vertices);
         addPolygons(st.subFaces, entitiesLevels[i + 1]);
     }
@@ -425,6 +476,8 @@ function addSubtriangles(closestFace, i) {
 
 function createLevels(levelIndex) {
     const viewer = window.fullerData.viewer;
+    console.log("entitiesLevels.length: ", entitiesLevels.length);
+    console.log("Creating levels up to: ", levelIndex);
     for (let i = entitiesLevels.length; i <= levelIndex; i++) {
         console.log("Creating level:", i);
         var level = viewer.entities.add(new Cesium.Entity());

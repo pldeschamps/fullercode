@@ -31,7 +31,7 @@ class Subtriangles {
         // and subtrianglesIds should be calculated to harmonize the surfaces of the 16 subtriangles
 
         if (faceGeoPos.faceId.length === 1) {
-            console.log("faceGeoPos.faceId.length === 1, faceId=",faceGeoPos.faceId);
+            // console.log("faceGeoPos.faceId.length === 1, faceId=",faceGeoPos.faceId);
             // calculate the gravity center of the triangle
             const gc = Subtriangles.gravityCenter(this.a, this.b, this.c);
             //console.log("gc: ",gc);
@@ -40,7 +40,7 @@ class Subtriangles {
             // to 9.918 degrees from the center of the triangle
             const angle = 0.1731078136930592; // in radians, approx 9.918 degrees
             this.ac_ab = Subtriangles.rotateTowards(gc, this.a, angle);
-            console.log("ac_ab: ",this.ac_ab);
+            // console.log("ac_ab: ",this.ac_ab);
             this.ab_bc = Subtriangles.rotateTowards(gc, this.b, angle);
             this.bc_ac = Subtriangles.rotateTowards(gc, this.c, angle);
             // The purpose is to get a surface of the subtriangles of index 1, 6 and 11 equal to the surface of the subtriangles of index 3, 15, 5, 8, 10, 13
@@ -86,7 +86,7 @@ class Subtriangles {
         //console.log(faceGeoPos.faceId.length);
         //console.log(!faceGeoPos.parentOrientation);
         if (faceGeoPos.faceId.length > 1 && !faceGeoPos.parentOrientation) {
-            console.log("faceId: ",faceGeoPos.faceId, " is down");
+            // console.log("faceId: ",faceGeoPos.faceId, " is down");
             // faceGeoPos is a down triangle, so we change the orientation of its subtriangles
             // according to the following Straight P-box mapping:
             //original pattern: 0, 1, 2, 3, 4, 5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15
@@ -102,10 +102,10 @@ class Subtriangles {
             // faceGeoPos is an up triangle, so we keep the orientation of its subtriangles
             ids = faceGeoPos.subtrianglesIds.split('');
         }
-        console.log(ids[0]);
-        console.log("A: ",[this.a, this.a_ab, this.ac_a]);
+        // console.log(ids[0]);
+        // console.log("A: ",[this.a, this.a_ab, this.ac_a]);
         // Define 16 subtriangles (each as a FacesGeoPositions)
-        console.log("faceId: ",this.faceGeoPos.faceId + ids[0], " up: ", up);
+        // console.log("faceId: ",this.faceGeoPos.faceId + ids[0], " up: ", up);
         this.subFaces = [
             new FaceGeoPositions(this.faceGeoPos.faceId + ids[0], [this.ac_ab, this.ab_bc, this.bc_ac], faceGeoPos.subtrianglesIds,up),
             new FaceGeoPositions(this.faceGeoPos.faceId + ids[1], [this.a, this.a_ab, this.ac_a], faceGeoPos.subtrianglesIds,up),

@@ -38,8 +38,8 @@ fetch("icosahedron.json")
             }
                 
             );
-            console.log(positions[1].y);
-            console.log(face.subtrianglesids);
+            // console.log(positions[1].y);
+            // console.log(face.subtrianglesids);
             return new FaceGeoPositions(face.id, positions, face.subtrianglesids);
         });
 

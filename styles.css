@@ -10,7 +10,10 @@
 html,body{width: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;}
+  height: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;}
   #cesiumContainer{
   position:fixed;
     width: 100vw;
@@ -167,4 +170,18 @@ color:rgba(0,0,0,0.6);
 flex-wrap:wrap;
 justify-content:center;
 }
+}
+
+/* On small screens make the Cesium container part of the document flow so the page can scroll
+   and users can reach controls (fullscreen, etc.). Desktop keeps fixed for layout.
+*/
+@media (max-width:700px) {
+  #cesiumContainer {
+    position: relative;
+    width: 100%;
+    /* use the full viewport height minus the fixed header so the Cesium view fills the screen */
+    height: calc(100vh - 64px);
+    margin-top: 64px; /* push below the fixed header */
+    overflow: hidden;
+  }
 }

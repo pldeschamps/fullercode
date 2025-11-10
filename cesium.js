@@ -30,12 +30,83 @@ window.viewer.imageryLayers.addImageryProvider(osm);
 //window.viewer.imageryLayers.raiseToTop(osm);
 const cameraLabel = document.createElement("div");
 cameraLabel.id = "cameraWidget";
-cameraLabel.textContent = "Lat: -- | Lon: -- | Alt: --";
+cameraLabel.textContent = "Lat: - Lon: - Alt: -";
 window.viewer.container.appendChild(cameraLabel);
 const fullerCodeLabel = document.createElement("div");
 fullerCodeLabel.id = "fullerCodeWidget";
 fullerCodeLabel.textContent = "fullercode: ";
 window.viewer.container.appendChild(fullerCodeLabel);
+
+// Copy button to the right of the fullerCodeWidget
+const fullerCodeCopyBtn = document.createElement('button');
+fullerCodeCopyBtn.id = 'fullerCodeCopy';
+fullerCodeCopyBtn.type = 'button';
+fullerCodeCopyBtn.textContent = 'Copy';
+// use a CSS class for styling; JS will position the button (left/top)
+fullerCodeCopyBtn.className = 'fullerCodeCopy';
+fullerCodeCopyBtn.setAttribute('aria-label', 'Copy fullercode link');
+
+window.viewer.container.appendChild(fullerCodeCopyBtn);
+
+function positionCopyButton() {
+    // Position the copy button to the right of the fullerCodeLabel
+    try {
+        const rect = fullerCodeLabel.getBoundingClientRect();
+        // viewer.container is positioned; compute left relative to container
+        const containerRect = window.viewer.container.getBoundingClientRect();
+        const left = rect.right - containerRect.left + 8; // 8px gap
+        fullerCodeCopyBtn.style.left = left + 'px';
+        // align vertically with label
+        fullerCodeCopyBtn.style.top = (rect.top - containerRect.top) + 'px';
+    } catch (e) {
+        // fallback
+        fullerCodeCopyBtn.style.left = '220px';
+    }
+}
+
+// initial position and on resize
+positionCopyButton();
+window.addEventListener('resize', positionCopyButton);
+
+// Copy handler: build URL and copy to clipboard
+async function copyFullercodeLink() {
+    // Extract only the last word (the actual code) from the label text.
+    // Example: "fullercode: XF" -> "XF"
+    const labelText = (fullerCodeLabel.textContent || '').trim();
+    console.log('labelText:', labelText);
+    const match = labelText.match(/([A-Z0-9]+)$/i);
+    let code = match ? match[1].toUpperCase() : '';
+    // If label didn't contain a code yet, fall back to the input value
+    if (!code) code = (fullerCodeInput.value || '').trim().toUpperCase();
+    // Build base URL (use canonical host); change if you prefer dynamic origin
+    const base = 'https://www.fullercode.org/index.html';
+    const hash = code ? ('#' + code) : '';
+    const url = base + hash;
+
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(url);
+        } else {
+            // fallback
+            const ta = document.createElement('textarea');
+            ta.value = url;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+        }
+        // feedback
+        const old = fullerCodeCopyBtn.textContent;
+        fullerCodeCopyBtn.textContent = 'Copied!';
+        setTimeout(() => { fullerCodeCopyBtn.textContent = old; }, 1500);
+    } catch (err) {
+        console.error('Copy failed', err);
+        fullerCodeCopyBtn.textContent = 'Failed';
+        setTimeout(() => { fullerCodeCopyBtn.textContent = 'Copy'; }, 1500);
+    }
+}
+
+fullerCodeCopyBtn.addEventListener('click', copyFullercodeLink);
 
 const fullerCodeInput = document.createElement("input");
 fullerCodeInput.id = "fullerCodeInput";
@@ -359,10 +430,9 @@ function updateCameraLabel() {
     );
     const lat = Cesium.Math.toDegrees(cameraCartographic.latitude).toFixed(6);
     const lon = Cesium.Math.toDegrees(cameraCartographic.longitude).toFixed(6);
-    console.log("Camera Lat: ", lat, " Lon: ", lon, " Alt: ", cameraCartographic.height.toFixed(2));
+    console.log("Lat: ", lat, " Lon: ", lon, " Alt: ", cameraCartographic.height.toFixed(0));
     cameraLabel.textContent =
-        `Camera: lat ${lat}, 
-        lon ${lon}, alt ${cameraCartographic.height.toFixed(0)}`;
+        `Lat: ${lat} Lon: ${lon} Alt: ${cameraCartographic.height.toFixed(0)}`;
 
 
 }
@@ -454,7 +524,8 @@ function findClosestFaceCenter() {
         closestFace = nextClosestFace;
         secondClosestFace = nextSecondClosestFace;
         fullerCodeLabel.textContent =
-        `fullercode: ${closestFace.faceId}`; 
+        `fullercode: ${closestFace.faceId}`;
+        positionCopyButton();
         console.log("closest: ", closestFace.faceId);
         console.log("second closest: ", secondClosestFace.faceId);
     }

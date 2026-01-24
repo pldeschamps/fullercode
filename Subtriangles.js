@@ -5,22 +5,23 @@ class Subtriangles {
         this.b = this.faceGeoPos.vertices[1];
         this.c = this.faceGeoPos.vertices[2];
 
-     // Naming convention for points and mid-points:
-     //
-     //                   a [0]               
-     //                   /\                  
-     //                  /1 \                 
-     //            ac_a /____\  a_ab          
-     //                /\  2 /\               
-     //               /15\  /3 \              
-     //           ac /____\/____\  ab         
-     //             /\ 14 /\  4 /\            
-     //            /13\  /0 \  / 5\           
-     //      c_ac /____\/____\/____\ ab_b     
-     //          /\12  /\    /\    /\         
-     //         /11\  /10\ 9/ 8\ 7/6 \        
-     //        /____\/____\/____\/____\       
-     //   [2] c    bc_c    bc    b_bc   b [1] 
+// Naming convention for points and mid-points:
+//
+//                   a [0]               
+//                   /\                  
+//                  /1 \                 
+//            ac_a /____\ a_ab          
+//                /\  2 /\               
+//               /15\  /3 \              
+//           ac /__ ac_ab _\ ab         
+//             /\ 14 /\  4 /\            
+//            /13\  /0 \  / 5\           
+//      c_ac /_ bc_ac  ab_bc _\ ab_b     
+//          /\12  /\    /\    /\         
+//         /11\  /10\ 9/ 8\ 7/6 \        
+//        /____\/____\/____\/____\       
+//   [2] c    bc_c   bc    b_bc   b [1] 
+//
 
         // First-level midpoints
         this.ab = Subtriangles.midpoint(this.a, this.b);

@@ -100,31 +100,48 @@ South Pacific
             </pre>
             <br>
              <a id="subtriangles"><h2>Subtriangles</h2></a>
-            Every face has three summits identified by 0 (on top), 1 and 2 clockwise.
+            Every face has three summits identified by 0 (the closest summit to Vestbrakan or the South Pacific), 1 and 2 clockwise.
             Each face is further divided into 16 smaller triangles, and so on.
 
             The smaller triangle in the middle has index 0 and always refered as "C".
             The other triangles are numbered from 1 to 15 as follows:
             <br>
             <pre style="line-height: 1.1;">
-            Indexes                   Example: Face M
-                0                              0
-                /\                             /\
-               /1 \                           /A \
-              /____\                         /____\
-             /\  2 /\                       /\ 2  /\
-            /15\  /3 \                     / X\  /F \
-           /____\/____\                   /____\/____\
-          /\ 14 /\  4 /\                 /\ 9  /\  3 /\
-         /13\  /0 \  / 5\               /V \  /C \  / H\
-        /____\/____\/____\             /____\/____\/____\
-       /\12  /\    /\    /\           /\ 8  /\  7 /\    /\
-      /11\  /10\ 9/ 8\ 7/6 \         / T\  /R \  / P\ 5/M \
-     /____\/____\/____\/____\       /____\/____\/____\/____\
-    2                        1     2                        1
+            Indexes              
+                (0)                
+                /\               
+               /1 \              
+              /____\             
+             /\  2 /\            
+            /15\  /3 \           
+           /____\/____\          
+          /\ 14 /\  4 /\         
+         /13\  /0 \  / 5\        
+        /____\/____\/____\       
+       /\12  /\    /\    /\      
+      /11\  /10\ 9/ 8\ 7/6 \     
+     /____\/____\/____\/____\    
+   (2)                      (1)   
+
+ Example: Faces 'M' and '5' have
+the same pattern of subtriangles:
+                (0)
+                /\
+               /A \
+              /____\
+             /\ 2  /\
+            / X\  /F \
+           /____\/____\
+          /\ 9  /\  3 /\
+         /V \  /C \  / H\
+        /____\/____\/____\
+       /\ 8  /\  7 /\    /\
+      / T\  /R \  / P\ 5/M \
+     /____\/____\/____\/____\
+   (2)                      (1)
 </pre>
 <br>
-Each face has a different pattern of characters for the subtriangles to avoid that adjacent triangles have the same character on their common edge or summit.
+There are 20 triangles and 10 different patterns of subtriangles to avoid that adjacent triangles have the same character on their common edge or summit.
 <br>
 <br>
 
